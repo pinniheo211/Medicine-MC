@@ -1,5 +1,5 @@
 // material-ui
-import { Box,  useMediaQuery } from '@mui/material';
+import { Box, useMediaQuery } from '@mui/material';
 
 // project import
 import Search from './Search';
