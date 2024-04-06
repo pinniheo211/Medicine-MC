@@ -15,6 +15,7 @@ import 'assets/third-party/apex-chart.css';
 import App from './App';
 import { store } from 'store';
 import reportWebVitals from './reportWebVitals';
+import Toaster from 'components/Toaster';
 
 // ==============================|| MAIN - REACT DOM RENDER  ||============================== //
 
@@ -27,6 +28,7 @@ root.render(
         <App />
       </BrowserRouter>
     </ReduxProvider>
+    <Toaster />
   </StrictMode>
 );
 

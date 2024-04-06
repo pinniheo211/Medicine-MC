@@ -1,77 +1,70 @@
-import { useEffect, useState } from 'react';
+// import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
-import {
-  Box,
-  Button,
-  Divider,
-  FormControl,
-  FormHelperText,
-  Grid,
-  Link,
-  IconButton,
-  InputAdornment,
-  Stack,
-  Typography
-} from '@mui/material';
+import { Divider, FormControl, Grid, Link, Stack, Typography } from '@mui/material';
 
+import { yupResolver } from '@hookform/resolvers/yup';
 // third party
 
 // project import
 import FirebaseSocial from './FirebaseSocial';
-import AnimateButton from 'components/@extended/AnimateButton';
-import { strengthColor, strengthIndicator } from 'utils/password-strength';
+// import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets
-import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { SCHEMA_REGISTER } from 'utils/schema';
+
 import { Controller } from 'react-hook-form';
 import { TextField } from '@mui/material';
+import { SCHEMA_REGISTER } from 'utils/schema';
+import { useDispatch } from 'react-redux';
+import { actionRegister } from 'store/auth';
+// import { useRouter } from 'next/navigation';
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const AuthRegister = () => {
-  const [level, setLevel] = useState();
-  const [showPassword, setShowPassword] = useState(false);
-
+  // const [level, setLevel] = useState();
+  // const router = useRouter;
+  const dispatch = useDispatch();
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors }
   } = useForm({
     mode: 'onChange',
     defaultValues: {
-      name: '',
-      email: '',
-      password: ''
+      name: null,
+      email: null,
+      password: null
     },
     resolver: yupResolver(SCHEMA_REGISTER)
   });
 
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  const changePassword = (value) => {
-    const temp = strengthIndicator(value);
-    setLevel(strengthColor(temp));
-  };
-
+  // const changePassword = () => {
+  //   const temp = strengthIndicator(watch('password'));
+  //   setLevel(strengthColor(temp));
+  // };
+  console.log(watch('password'));
   const onSubmit = (data) => {
-    console.log(data);
+    const registerData = {
+      name: data?.name,
+      email: data?.email,
+      password: data?.password
+    };
+
+    dispatch(actionRegister(registerData)).then((res) => {
+      if (res?.payload?.err === 0) {
+        // localStorage.setItem("token", JSON.stringify(res?.payload?.userData));
+        // router.push('/dashboard/default');
+      }
+    });
   };
 
-  useEffect(() => {
-    changePassword('');
-  }, []);
-
+  // useEffect(() => {
+  //   changePassword('');
+  // }, []);
   return (
     <>
       <form noValidate onSubmit={handleSubmit(onSubmit)}>
@@ -91,7 +84,7 @@ const AuthRegister = () => {
           <Grid item xs={12}>
             <Stack spacing={1}>
               <Controller
-                name="Email"
+                name="email"
                 control={control}
                 render={({ field }) => (
                   <TextField {...field} fullWidth error={Boolean(errors.email)} helperText={errors.email?.message || ''} label="Email" />
@@ -102,46 +95,28 @@ const AuthRegister = () => {
           <Grid item xs={12}>
             <Stack spacing={1}>
               <Controller
-                name="Password"
+                name="password"
                 control={control}
                 render={({ field }) => (
                   <TextField
                     {...field}
                     fullWidth
-                    error={Boolean(errors.email)}
-                    onChange={(e) => {
-                      changePassword(e.target.value);
-                    }}
-                    type={showPassword ? 'text' : 'password'}
+                    type="password"
+                    error={Boolean(errors.password)}
                     helperText={errors.password?.message || ''}
                     label="Password"
                     placeholder="******"
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                          size="large"
-                        >
-                          {showPassword ? <EyeOutlined /> : <EyeInvisibleOutlined />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
                   />
                 )}
               />
             </Stack>
             <FormControl fullWidth sx={{ mt: 2 }}>
               <Grid container spacing={2} alignItems="center">
+                <Grid item>{/* <Box sx={{ bgcolor: level?.color, width: 85, height: 8, borderRadius: '7px' }} /> */}</Grid>
                 <Grid item>
-                  <Box sx={{ bgcolor: level?.color, width: 85, height: 8, borderRadius: '7px' }} />
-                </Grid>
-                <Grid item>
-                  <Typography variant="subtitle1" fontSize="0.75rem">
+                  {/* <Typography variant="subtitle1" fontSize="0.75rem">
                     {level?.label}
-                  </Typography>
+                  </Typography> */}
                 </Grid>
               </Grid>
             </FormControl>
@@ -158,17 +133,8 @@ const AuthRegister = () => {
               </Link>
             </Typography>
           </Grid>
-          {errors.submit && (
-            <Grid item xs={12}>
-              <FormHelperText error>{errors.submit}</FormHelperText>
-            </Grid>
-          )}
           <Grid item xs={12}>
-            <AnimateButton>
-              <Button disableElevation fullWidth size="large" type="submit" variant="contained" color="primary">
-                Create Account
-              </Button>
-            </AnimateButton>
+            <button className="w-full py-3 rounded-lg bg-qyellow text-white">Create Account</button>
           </Grid>
           <Grid item xs={12}>
             <Divider>
