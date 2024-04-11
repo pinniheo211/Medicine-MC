@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // material-ui
 import {
@@ -32,6 +33,7 @@ import avatar1 from 'assets/images/users/avatar-1.png';
 import avatar2 from 'assets/images/users/avatar-2.png';
 import avatar3 from 'assets/images/users/avatar-3.png';
 import avatar4 from 'assets/images/users/avatar-4.png';
+import { renderRouterAccept } from 'utils/helper';
 // avatar style
 const avatarSX = {
   width: 36,
@@ -70,15 +72,7 @@ const status = [
 const DashboardDefault = () => {
   const [value, setValue] = useState('today');
   const [slot, setSlot] = useState('week');
-  // const router = useRouter();
-  // useEffect(() => {
-  //   const user = auth();
-  //   if (!user && !renderRouterAccept.includes(router.pathname)) {
-  //     router.replace('/login');
-  //   } else if (user && renderRouterAccept.includes(router.pathname)) {
-  //     router.replace('/');
-  //   }
-  // }, [router]);
+
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
       {/* row 1 */}

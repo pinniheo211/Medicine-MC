@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -28,6 +28,10 @@ import SettingTab from './SettingTab';
 // assets
 import avatar1 from 'assets/images/users/avatar-1.png';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { actionGetUser } from 'store/reducers/auth';
+import { useSelector } from 'react-redux';
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -55,9 +59,16 @@ function a11yProps(index) {
 
 const Profile = () => {
   const theme = useTheme();
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { data: dataUser } = useSelector((state) => state.auth.user);
   const handleLogout = async () => {
     // logout
+    const user = localStorage.getItem('access_token');
+    if (user) {
+      localStorage.removeItem('access_token');
+      navigate('/login');
+    }
   };
 
   const anchorRef = useRef(null);
@@ -80,7 +91,6 @@ const Profile = () => {
   };
 
   const iconBackColorOpen = 'grey.300';
-
   return (
     <Box sx={{ flexShrink: 0, ml: 0.75 }}>
       <ButtonBase
@@ -98,7 +108,7 @@ const Profile = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
-          <div className="text-black font-bold">John Doe</div>
+          <div className="text-black font-bold">{dataUser?.userData?.name}</div>
         </Stack>
       </ButtonBase>
       <Popper
@@ -141,17 +151,12 @@ const Profile = () => {
                           <Stack direction="row" spacing={1.25} alignItems="center">
                             <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
                             <Stack>
-                              <Typography variant="h6">John Doe</Typography>
+                              <Typography variant="h6">{dataUser?.userData?.name}</Typography>
                               <Typography variant="body2" color="textSecondary">
-                                UI/UX Designer
+                                {dataUser?.userData?.email}
                               </Typography>
                             </Stack>
                           </Stack>
-                        </Grid>
-                        <Grid item>
-                          <IconButton size="large" color="secondary" onClick={handleLogout}>
-                            <LogoutOutlined />
-                          </IconButton>
                         </Grid>
                       </Grid>
                     </CardContent>

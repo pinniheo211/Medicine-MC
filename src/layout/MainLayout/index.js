@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { renderRouterAccept } from 'utils/helper';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
 import { Box, Toolbar, useMediaQuery } from '@mui/material';
+import { useLocation } from 'react-router-dom';
 
 // project import
 import Drawer from './Drawer';
@@ -14,6 +17,7 @@ import Breadcrumbs from 'components/@extended/Breadcrumbs';
 
 // types
 import { openDrawer } from 'store/reducers/menu';
+import { actionGetUser } from 'store/reducers/auth';
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
@@ -35,14 +39,31 @@ const MainLayout = () => {
   useEffect(() => {
     setOpen(!matchDownLG);
     dispatch(openDrawer({ drawerOpen: !matchDownLG }));
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matchDownLG]);
 
   useEffect(() => {
     if (open !== drawerOpen) setOpen(drawerOpen);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [drawerOpen]);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const user = localStorage.getItem('access_token');
+    if (!user && !renderRouterAccept.includes(location.pathname)) {
+      navigate('/login');
+    } else if (user && renderRouterAccept.includes(location.pathname)) {
+      navigate('/');
+    } else {
+      if (user) {
+        dispatch(actionGetUser()).then((res) => {
+          console.log(res);
+        });
+      }
+    }
+  }, [navigate]);
 
   return (
     <Box sx={{ display: 'flex', width: '100%' }}>
