@@ -1,1 +1,1 @@
-export const renderRouterAccept = ['/login', '/signup'];
+export const renderRouterAccept = ['/login', '/register'];

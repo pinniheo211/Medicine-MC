@@ -13,9 +13,9 @@ import 'assets/third-party/apex-chart.css';
 
 // project import
 import App from './App';
-import { store } from 'store';
 import reportWebVitals from './reportWebVitals';
 import Toaster from 'components/Toaster';
+import { store } from 'store/index';
 
 // ==============================|| MAIN - REACT DOM RENDER  ||============================== //
 

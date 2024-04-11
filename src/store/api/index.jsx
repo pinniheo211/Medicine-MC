@@ -9,7 +9,7 @@ const API = axios.create({
 API.interceptors.request.use((req) => {
   const token = getToken();
   if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
+    req.headers.authorization = `Bearer ${token}`;
   }
   return req;
 });
@@ -18,9 +18,8 @@ API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      localStorage.removeItem('auth');
       localStorage.removeItem('access_token');
-      window.location.href = '/';
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }
@@ -31,5 +30,9 @@ export default API;
 //auth
 
 export const AuthService = {
-  register: (data) => API.post('api/v1/auth/register/', data)
+  register: (data) => API.post('api/v1/auth/register', data),
+  login: (data) => API.post('api/v1/auth/login', data),
+  getUser: () => API.get('api/v1/user')
 };
+
+export const productService = {};

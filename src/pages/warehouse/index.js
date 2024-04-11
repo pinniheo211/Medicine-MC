@@ -1,5 +1,9 @@
 // material-ui
 
-const WarehousePage = () => <div>Ware house Page</div>;
+import EnhancedTable from 'components/Mui/DataTable';
+
+const WarehousePage = () => {
+  return <EnhancedTable />;
+};
 
 export default WarehousePage;

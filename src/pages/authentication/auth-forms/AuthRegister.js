@@ -1,5 +1,4 @@
 // import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import { Divider, FormControl, Grid, Link, Stack, Typography } from '@mui/material';
@@ -9,7 +8,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 // project import
 import FirebaseSocial from './FirebaseSocial';
-// import { strengthColor, strengthIndicator } from 'utils/password-strength';
 
 // assets
 import { useForm } from 'react-hook-form';
@@ -18,15 +16,21 @@ import { Controller } from 'react-hook-form';
 import { TextField } from '@mui/material';
 import { SCHEMA_REGISTER } from 'utils/schema';
 import { useDispatch } from 'react-redux';
-import { actionRegister } from 'store/auth';
-// import { useRouter } from 'next/navigation';
+import { actionRegister } from 'store/reducers/auth';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { renderRouterAccept } from 'utils/helper';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const AuthRegister = () => {
-  // const [level, setLevel] = useState();
-  // const router = useRouter;
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { loading } = useSelector((state) => state.auth.register);
   const dispatch = useDispatch();
+
   const {
     control,
     handleSubmit,
@@ -42,11 +46,6 @@ const AuthRegister = () => {
     resolver: yupResolver(SCHEMA_REGISTER)
   });
 
-  // const changePassword = () => {
-  //   const temp = strengthIndicator(watch('password'));
-  //   setLevel(strengthColor(temp));
-  // };
-  console.log(watch('password'));
   const onSubmit = (data) => {
     const registerData = {
       name: data?.name,
@@ -56,15 +55,19 @@ const AuthRegister = () => {
 
     dispatch(actionRegister(registerData)).then((res) => {
       if (res?.payload?.err === 0) {
-        // localStorage.setItem("token", JSON.stringify(res?.payload?.userData));
-        // router.push('/dashboard/default');
+        localStorage.setItem('access_token', JSON.stringify(res?.payload?.access_token));
+        navigate('/');
       }
     });
   };
 
-  // useEffect(() => {
-  //   changePassword('');
-  // }, []);
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('access_token'));
+    if (user && renderRouterAccept.includes(location.pathname)) {
+      navigate('/');
+    }
+  }, [navigate]);
+
   return (
     <>
       <form noValidate onSubmit={handleSubmit(onSubmit)}>
@@ -110,39 +113,15 @@ const AuthRegister = () => {
                 )}
               />
             </Stack>
-            <FormControl fullWidth sx={{ mt: 2 }}>
-              <Grid container spacing={2} alignItems="center">
-                <Grid item>{/* <Box sx={{ bgcolor: level?.color, width: 85, height: 8, borderRadius: '7px' }} /> */}</Grid>
-                <Grid item>
-                  {/* <Typography variant="subtitle1" fontSize="0.75rem">
-                    {level?.label}
-                  </Typography> */}
-                </Grid>
-              </Grid>
-            </FormControl>
           </Grid>
+
           <Grid item xs={12}>
-            <Typography variant="body2">
-              By Signing up, you agree to our &nbsp;
-              <Link variant="subtitle2" component={RouterLink} to="#">
-                Terms of Service
-              </Link>
-              &nbsp; and &nbsp;
-              <Link variant="subtitle2" component={RouterLink} to="#">
-                Privacy Policy
-              </Link>
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <button className="w-full py-3 rounded-lg bg-qyellow text-white">Create Account</button>
-          </Grid>
-          <Grid item xs={12}>
-            <Divider>
-              <Typography variant="caption">Sign up with</Typography>
-            </Divider>
-          </Grid>
-          <Grid item xs={12}>
-            <FirebaseSocial />
+            <button
+              disabled={loading}
+              className="disabled:cursor-not-allowed disabled:opacity-50 w-full py-3 rounded-lg bg-qyellow text-white"
+            >
+              Create Account
+            </button>
           </Grid>
         </Grid>
       </form>

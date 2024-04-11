@@ -1,3 +1,7 @@
-const Product = () => <div>Product page</div>;
+import EnhancedTable from 'components/Mui/DataTable';
+
+const Product = () => {
+  return <EnhancedTable />;
+};
 
 export default Product;
