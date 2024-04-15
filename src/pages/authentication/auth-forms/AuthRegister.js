@@ -39,8 +39,10 @@ const AuthRegister = () => {
   } = useForm({
     mode: 'onChange',
     defaultValues: {
-      name: null,
+      username: null,
       email: null,
+      phone: null,
+      company: null,
       password: null
     },
     resolver: yupResolver(SCHEMA_REGISTER)
@@ -48,15 +50,16 @@ const AuthRegister = () => {
 
   const onSubmit = (data) => {
     const registerData = {
-      name: data?.name,
+      username: data?.name,
       email: data?.email,
+      phone: data?.phone,
+      company: data?.company,
       password: data?.password
     };
 
     dispatch(actionRegister(registerData)).then((res) => {
       if (res?.payload?.err === 0) {
-        localStorage.setItem('access_token', JSON.stringify(res?.payload?.access_token));
-        navigate('/');
+        navigate('/login');
       }
     });
   };
@@ -91,6 +94,34 @@ const AuthRegister = () => {
                 control={control}
                 render={({ field }) => (
                   <TextField {...field} fullWidth error={Boolean(errors.email)} helperText={errors.email?.message || ''} label="Email" />
+                )}
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={12}>
+            <Stack spacing={1}>
+              <Controller
+                name="phone"
+                control={control}
+                render={({ field }) => (
+                  <TextField {...field} fullWidth error={Boolean(errors.phone)} helperText={errors.phone?.message || ''} label="Phone" />
+                )}
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={12}>
+            <Stack spacing={1}>
+              <Controller
+                name="company"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    error={Boolean(errors.company)}
+                    helperText={errors.company?.message || ''}
+                    label="Company"
+                  />
                 )}
               />
             </Stack>

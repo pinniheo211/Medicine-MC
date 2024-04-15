@@ -35,4 +35,6 @@ export const AuthService = {
   getUser: () => API.get('api/v1/user')
 };
 
-export const productService = {};
+export const productService = {
+  getProduct: () => API.get('api/v1/product')
+};

@@ -1,9 +1,12 @@
 // material-ui
 
-import EnhancedTable from 'components/Mui/DataTable';
+import DataTable from 'components/Mui/DataTable';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { actionGetProduct } from 'store/reducers/product';
 
 const WarehousePage = () => {
-  return <EnhancedTable />;
+  return <DataTable />;
 };
 
 export default WarehousePage;
