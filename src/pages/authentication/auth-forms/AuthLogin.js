@@ -58,7 +58,7 @@ const AuthLogin = () => {
     dispatch(actionLogin(loginData)).then((res) => {
       if (res?.payload?.err === 0) {
         localStorage.setItem('access_token', res?.payload?.access_token);
-        navigate('/');
+        navigate('/dashboard/default');
       }
     });
   };
@@ -110,7 +110,7 @@ const AuthLogin = () => {
           <AnimateButton>
             <button
               // disabled={loading}
-              className="disabled:cursor-not-allowed disabled:opacity-50 w-full py-3 rounded-lg bg-qyellow text-white"
+              className="disabled:cursor-not-allowed disabled:opacity-50 w-full py-3 rounded-lg bg-qh2-green text-white"
             >
               Login
             </button>

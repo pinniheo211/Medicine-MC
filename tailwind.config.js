@@ -46,6 +46,22 @@ module.exports = {
         main: '#F1F3F8',
         grayMobile: '#C8CBD7'
       }
+    },
+    container: {
+      ...require('tailwindcss/defaultConfig').theme.container,
+      center: true,
+      padding: {
+        DEFAULT: '1rem',
+        lg: '2rem',
+        xl: '2rem'
+      },
+      screens: {
+        sm: '100%',
+        md: '100%',
+        lg: '1100px',
+        xl: '1280px',
+        '2xl': '1536px'
+      }
     }
   },
   plugins: []

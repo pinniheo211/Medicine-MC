@@ -32,20 +32,21 @@ const dashboard = {
       icon: icons.UserOutlined,
       breadcrumbs: true
     },
-    {
-      id: 'warehouse',
-      title: 'Warehouse',
-      type: 'item',
-      url: '/dashboard/ware-house',
-      icon: icons.HomeOutlined,
-      breadcrumbs: true
-    },
+
     {
       id: 'product',
       title: 'Products',
       type: 'item',
       url: '/dashboard/products',
       icon: icons.ShoppingCartOutlined,
+      breadcrumbs: true
+    },
+    {
+      id: 'warehouse',
+      title: 'Warehouse',
+      type: 'item',
+      url: '/dashboard/ware-house',
+      icon: icons.HomeOutlined,
       breadcrumbs: true
     }
   ]

@@ -1,7 +1,6 @@
 import { Paper } from '@mui/material';
 import { Avatar } from '@mui/material';
 import { useSelector } from 'react-redux';
-import EditIcon from '@mui/icons-material/Edit';
 import { Grid } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import { TextField } from '@mui/material';
@@ -13,6 +12,7 @@ import styled from '@emotion/styled';
 import { Button } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
+import UploadImage from 'components/UploadImage';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',

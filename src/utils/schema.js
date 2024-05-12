@@ -17,3 +17,11 @@ export const SCHEMA_LOGIN = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is required').max(250, 'Email cannot exceed 250 characters'),
   password: Yup.string().required('Password is required').min(6, 'Password must be at least 6 characters')
 });
+
+export const SCHEMA_NEW_PRODUCT = Yup.object().shape({
+  name: Yup.string().required('Product name is required'),
+  price: Yup.number().required('Price is required'),
+  available: Yup.number().required('Available is required'),
+  category_code: Yup.string().required('Category is required'),
+  description: Yup.string().required('Description is required')
+});

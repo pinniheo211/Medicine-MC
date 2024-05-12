@@ -36,5 +36,12 @@ export const AuthService = {
 };
 
 export const productService = {
-  getProduct: () => API.get('api/v1/product')
+  getProduct: (id) => API.get(`api/v1/product/?userId=${id}`),
+  addNewProduct: (data) => API.post(`api/v1/product/`, data),
+  deleteProduct: (id) => API.delete(`/api/v1/product/?pids[0]=${id}`)
+};
+
+export const warehouseService = {
+  getWarehouse: (id) => API.get(`api/v1/warehouse?userId=${id}`),
+  deleteWarehouse: (id) => API.delete(`api/v1/warehouse?wids[0]=${id}`)
 };
