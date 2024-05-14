@@ -17,14 +17,30 @@ const actionGetWarehouse = createAsyncThunk('warehouse/getWareHouse', async (id)
   }
 });
 
+const actionDoCreateWarehouse = createAsyncThunk('warehouse/createWarehouse', async (data) => {
+  try {
+    const res = await warehouseService.doCreateWarehouse(data);
+    if (res.status === 200) {
+      toast.success(res.data.mes);
+      return res.data;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    const message = error.response.data?.message || error.message;
+    toast.error(message);
+    return error.response.data;
+  }
+});
+
 const actionDeleteWarehouse = createAsyncThunk('warehouse/deleteWarehouse', async (id) => {
   try {
     const res = await warehouseService.deleteWarehouse(id);
     if (res.status === 200) {
-      toast.success(res.data.message);
+      toast.success(res.data.mes);
       return res.data;
     } else {
-      toast.error(res.data.message);
+      toast.error(res.data.mes);
       return res.data;
     }
   } catch (error) {
@@ -45,6 +61,11 @@ const { reducer } = createSlice({
       error: ''
     },
     deleteWarehouse: {
+      loading: false,
+      data: null,
+      error: ''
+    },
+    createWarehouse: {
       loading: false,
       data: null,
       error: ''
@@ -78,10 +99,23 @@ const { reducer } = createSlice({
         state.deleteWarehouse.loading = false;
         state.deleteWarehouse.data = action.payload;
         state.deleteWarehouse.error = '';
+      })
+      .addCase(actionDoCreateWarehouse.pending, (state) => {
+        state.createWarehouse.loading = true;
+      })
+      .addCase(actionDoCreateWarehouse.rejected, (state, action) => {
+        state.createWarehouse.loading = false;
+        state.createWarehouse.error = action.payload;
+        state.createWarehouse.data = {};
+      })
+      .addCase(actionDoCreateWarehouse.fulfilled, (state, action) => {
+        state.createWarehouse.loading = false;
+        state.createWarehouse.data = action.payload;
+        state.createWarehouse.error = '';
       });
   }
 });
 
 export default reducer;
 
-export { actionGetWarehouse, actionDeleteWarehouse };
+export { actionGetWarehouse, actionDeleteWarehouse, actionDoCreateWarehouse };

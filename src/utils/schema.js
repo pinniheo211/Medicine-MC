@@ -25,3 +25,9 @@ export const SCHEMA_NEW_PRODUCT = Yup.object().shape({
   category_code: Yup.string().required('Category is required'),
   description: Yup.string().required('Description is required')
 });
+
+export const SCHEMA_NEWWAREHOUSE = Yup.object().shape({
+  warehouseName: Yup.string().required('Warehouse name is required'),
+  phone: Yup.string().required('required').matches(phoneRegExp, 'Phone number is not valid').min(10, 'too short').max(10, 'too long'),
+  address: Yup.string().required('Address is required')
+});

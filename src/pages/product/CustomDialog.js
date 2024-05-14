@@ -3,13 +3,10 @@ import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
-import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@emotion/react';
 import { Controller } from 'react-hook-form';
 import UploadImage from 'components/UploadImage';
 import { useDispatch } from 'react-redux';
@@ -19,11 +16,11 @@ import { CurrencyNumericFormat } from 'components/Mui/NumericFormat';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SCHEMA_NEW_PRODUCT } from 'utils/schema';
 import { useState } from 'react';
+import LoaderStyleOne from 'components/LoadingComponent';
 
-export default function DialogProduct({ open, setOpen, setDataProduct, userId }) {
+export default function DialogProduct({ open, setOpen, userId }) {
   const dispatch = useDispatch();
   const [file, setFile] = useState();
-  const [loading, setLoading] = useState(false);
   const { data: dataProfile } = useSelector((state) => state.auth.user);
   const handleClose = () => {
     setOpen(false);
@@ -47,7 +44,6 @@ export default function DialogProduct({ open, setOpen, setDataProduct, userId })
   });
   const handleNew = (data) => {
     const dataNew = new FormData();
-    setLoading(true);
     dataNew.append('name', data?.name);
     dataNew.append('price', data?.price);
     dataNew.append('available', data?.available);
@@ -60,15 +56,12 @@ export default function DialogProduct({ open, setOpen, setDataProduct, userId })
         setOpen(false);
         dispatch(actionGetProduct(userId)).then((res) => {
           if (res?.payload?.err === 0) {
-            setDataProduct(res?.payload?.productData?.rows);
             setOpen(false);
-            setLoading(false);
           }
         });
       }
     });
   };
-  console.log(loading);
   return (
     <>
       <Dialog
@@ -76,7 +69,7 @@ export default function DialogProduct({ open, setOpen, setDataProduct, userId })
           '& .MuiDialog-container': {
             '& .MuiPaper-root': {
               width: '100%',
-              maxWidth: '1000px' // Set your width here
+              maxWidth: '1000px'
             }
           }
         }}
@@ -179,10 +172,7 @@ export default function DialogProduct({ open, setOpen, setDataProduct, userId })
               <UploadImage setFile={setFile} />
             </div>
             <div className="text-right mt-10">
-              <button
-                disabled={loading}
-                className="min-w-[100px] disabled:cursor-not-allowed disabled:bg-slate-600 rounded-lg bg-qh2-green py-1.5 text-white"
-              >
+              <button className="min-w-[100px] disabled:cursor-not-allowed disabled:bg-slate-600 rounded-lg bg-qh2-green py-1.5 text-white">
                 submit
               </button>
             </div>

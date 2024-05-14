@@ -43,5 +43,6 @@ export const productService = {
 
 export const warehouseService = {
   getWarehouse: (id) => API.get(`api/v1/warehouse?userId=${id}`),
+  doCreateWarehouse: (data) => API.post('api/v1/warehouse', data),
   deleteWarehouse: (id) => API.delete(`api/v1/warehouse?wids[0]=${id}`)
 };

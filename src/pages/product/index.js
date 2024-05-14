@@ -11,14 +11,16 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import DateFormat from 'utils/format';
-import DialogProduct from './CustomDialog';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
 import CustomFormAccept from 'components/Mui/CustomFormAccept';
+import DialogProduct from './CustomDialog';
+import { truncate } from 'lodash';
 const Product = () => {
   const dispatch = useDispatch();
-  const [dataProduct, setDataProduct] = useState([]);
+  const { data: dataProduct } = useSelector((state) => state.product.getProduct);
+  // const [dataProduct, setDataProduct] = useState([]);
   const { data: dataProfile } = useSelector((state) => state.auth.user);
   const columns = [
     {
@@ -70,20 +72,17 @@ const Product = () => {
   const handleDelete = (id) => {
     dispatch(actionDeleteProduct(id)).then((res) => {
       if (res?.payload?.err === 0) {
-        debugger;
         dispatch(actionGetProduct(userId));
       }
       setOpen(false);
     });
   };
-  const handleOpen = () => {
-    setOpen(true);
-  };
+
   const userId = dataProfile?.userData?.userId;
   useEffect(() => {
     dispatch(actionGetProduct(userId)).then((res) => {
       if (res?.payload?.err === 0) {
-        setDataProduct(res?.payload?.productData?.rows);
+        // setDataProduct(res?.payload?.productData?.rows);
       }
     });
   }, []);
@@ -96,9 +95,7 @@ const Product = () => {
         >
           + Add Product
         </button>
-        {openDialog && (
-          <DialogProduct open={openDialog} setDataProduct={setDataProduct} userId={userId} setOpen={setOpenDialog} title="New Product" />
-        )}
+        {openDialog && <DialogProduct open={openDialog} userId={userId} setOpen={setOpenDialog} />}
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
@@ -112,15 +109,17 @@ const Product = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {dataProduct?.length > 0 ? (
-                  dataProduct.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                {dataProduct?.productData?.rows?.length > 0 ? (
+                  dataProduct?.productData?.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                     return (
                       <>
                         <TableRow hover role="checkbox" tabIndex={-1}>
                           <TableCell>{row?.id}</TableCell>
                           <TableCell>{row?.name}</TableCell>
                           <TableCell>{row?.categoryData?.value}</TableCell>
-                          <TableCell>{row?.description}</TableCell>
+                          <TableCell>
+                            <p className="max-w-[200px] break-words line-clamp-3">{row?.description}</p>
+                          </TableCell>
                           <TableCell align="center">
                             <div className="min-w-[200px] flex justify-center">
                               <img className="block w-[100px] h-[100px]" src={row?.image} alt="product image" />
@@ -130,7 +129,7 @@ const Product = () => {
                           <TableCell>{DateFormat(row?.createdAt)}</TableCell>
                           <TableCell align="center">
                             <div className="flex gap-3 items-center">
-                              <Button onClick={() => setOpen(true)} variant="outlined" startIcon={<DeleteIcon />}>
+                              <Button onClick={() => handleDelete(row?.id)} variant="outlined" startIcon={<DeleteIcon />}>
                                 Delete
                               </Button>
                               <Button variant="outlined" startIcon={<EditIcon />}>
@@ -139,14 +138,15 @@ const Product = () => {
                             </div>
                           </TableCell>
                         </TableRow>
-                        <CustomFormAccept
-                          open={open}
-                          setOpen={setOpen}
-                          setDataProduct={setDataProduct}
-                          title="Delete Product"
-                          description="Do you want to delete this Product?"
-                          id={row?.id}
-                        />
+                        {/* {open && (
+                          <CustomFormAccept
+                            open={open}
+                            setOpen={setOpen}
+                            title="Delete Product"
+                            description="Do you want to delete this Product?"
+                            handleDelete={() => handleDelete(row?.id)}
+                          />
+                        )} */}
                       </>
                     );
                   })
@@ -172,7 +172,7 @@ const Product = () => {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={dataProduct.length}
+            count={dataProduct?.productData?.count}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

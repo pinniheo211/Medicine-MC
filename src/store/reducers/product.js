@@ -41,11 +41,11 @@ const actionDeleteProduct = createAsyncThunk('product/deleteProduct', async (id)
   try {
     const res = await productService.deleteProduct(id);
     if (res.status === 200) {
-      toast.success(res.data.message);
+      toast.success(res.data.mes);
       return res.data;
     } else {
       debugger;
-      toast.error(res.data.message);
+      toast.error(res.data.mes);
       return res.data;
     }
   } catch (error) {
