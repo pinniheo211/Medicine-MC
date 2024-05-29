@@ -1,7 +1,7 @@
 import DataTable from 'components/Mui/DataTable';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { actionDeleteProduct, actionGetProduct } from 'store/reducers/product';
+import { actionDeleteProduct, actionGetDetailProduct, actionGetProduct } from 'store/reducers/product';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -17,6 +17,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import CustomFormAccept from 'components/Mui/CustomFormAccept';
 import DialogProduct from './CustomDialog';
 import { truncate } from 'lodash';
+import DialogUpdateForm from './DialogUpdateForm';
+import { actionGetCategory } from 'store/reducers/category';
+import { actionGetBrand } from 'store/reducers/brand';
 const Product = () => {
   const dispatch = useDispatch();
   const { data: dataProduct } = useSelector((state) => state.product.getProduct);
@@ -33,27 +36,31 @@ const Product = () => {
     },
     {
       id: 3,
-      label: 'Catregory'
+      label: 'Category'
     },
     {
       id: 4,
-      label: 'Description'
+      label: 'Brand'
     },
     {
       id: 5,
-      label: 'Image'
+      label: 'Description'
     },
     {
       id: 6,
+      label: 'Image'
+    },
+    {
+      id: 7,
       label: 'Price'
     },
 
     {
-      id: 7,
+      id: 8,
       label: 'Create At'
     },
     {
-      id: 8,
+      id: 9,
       label: 'Action'
     }
   ];
@@ -61,6 +68,9 @@ const Product = () => {
   const [open, setOpen] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openDialog, setOpenDialog] = useState(false);
+  const [id, setId] = useState();
+  const { data: dataCategory } = useSelector((state) => state.category.getCategory);
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -71,21 +81,24 @@ const Product = () => {
   };
   const handleDelete = (id) => {
     dispatch(actionDeleteProduct(id)).then((res) => {
-      if (res?.payload?.err === 0) {
-        dispatch(actionGetProduct(userId));
-      }
+      dispatch(actionGetProduct());
       setOpen(false);
     });
   };
 
-  const userId = dataProfile?.userData?.userId;
-  useEffect(() => {
-    dispatch(actionGetProduct(userId)).then((res) => {
-      if (res?.payload?.err === 0) {
-        // setDataProduct(res?.payload?.productData?.rows);
-      }
+  const handleUpdate = (id) => {
+    dispatch(actionGetDetailProduct(id)).then((res) => {
+      setOpen(true);
+      setId(id);
     });
+  };
+
+  useEffect(() => {
+    dispatch(actionGetProduct());
+    dispatch(actionGetCategory());
+    dispatch(actionGetBrand());
   }, []);
+  console.log(dataCategory?.productCategories);
   return (
     <div className="container w-full ">
       <div className="w-full  flex flex-col gap-10 items-end">
@@ -95,7 +108,7 @@ const Product = () => {
         >
           + Add Product
         </button>
-        {openDialog && <DialogProduct open={openDialog} userId={userId} setOpen={setOpenDialog} />}
+        {openDialog && <DialogProduct open={openDialog} setOpen={setOpenDialog} />}
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
@@ -109,44 +122,41 @@ const Product = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {dataProduct?.productData?.rows?.length > 0 ? (
-                  dataProduct?.productData?.rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                {dataProduct?.productDatas?.length > 0 ? (
+                  dataProduct?.productDatas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                     return (
                       <>
                         <TableRow hover role="checkbox" tabIndex={-1}>
-                          <TableCell>{row?.id}</TableCell>
-                          <TableCell>{row?.name}</TableCell>
-                          <TableCell>{row?.categoryData?.value}</TableCell>
+                          <TableCell align="center">{index + 1}</TableCell>
+                          <TableCell>{row?.title}</TableCell>
+                          <TableCell>
+                            <p className="min-w-max break-words line-clamp-3"> {row?.brand?.title}</p>
+                          </TableCell>
+                          <TableCell>
+                            <p className="min-w-max break-words line-clamp-3"> {row?.category?.title}</p>
+                          </TableCell>
                           <TableCell>
                             <p className="max-w-[200px] break-words line-clamp-3">{row?.description}</p>
                           </TableCell>
                           <TableCell align="center">
                             <div className="min-w-[200px] flex justify-center">
-                              <img className="block w-[100px] h-[100px]" src={row?.image} alt="product image" />
+                              <img className="block w-[100px] h-[100px]" src={row?.images[0]} alt="product image" />
                             </div>
                           </TableCell>
                           <TableCell>{row?.price}</TableCell>
                           <TableCell>{DateFormat(row?.createdAt)}</TableCell>
                           <TableCell align="center">
                             <div className="flex gap-3 items-center">
-                              <Button onClick={() => handleDelete(row?.id)} variant="outlined" startIcon={<DeleteIcon />}>
+                              <Button onClick={() => handleDelete(row?._id)} variant="outlined" startIcon={<DeleteIcon />}>
                                 Delete
                               </Button>
-                              <Button variant="outlined" startIcon={<EditIcon />}>
+                              <Button onClick={() => handleUpdate(row?._id)} variant="outlined" startIcon={<EditIcon />}>
                                 edit
                               </Button>
                             </div>
                           </TableCell>
                         </TableRow>
-                        {/* {open && (
-                          <CustomFormAccept
-                            open={open}
-                            setOpen={setOpen}
-                            title="Delete Product"
-                            description="Do you want to delete this Product?"
-                            handleDelete={() => handleDelete(row?.id)}
-                          />
-                        )} */}
+                        {open && <DialogUpdateForm open={open} setOpen={setOpen} id={id} />}
                       </>
                     );
                   })
@@ -172,7 +182,7 @@ const Product = () => {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={dataProduct?.productData?.count}
+            count={dataProduct?.productDatas?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

@@ -1,23 +1,5 @@
-// material-ui
-
-import DataTable from 'components/Mui/DataTable';
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { actionDeleteWarehouse, actionGetDescriptionWarehouse, actionGetWarehouse } from 'store/reducers/warehouse';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import DateFormat from 'utils/format';
-import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import DialogWarehouse from './CustomDialog';
-import DialogUpdateWarehouse from './CustomDialogUpdateWarehouse';
+import { Paper, Table, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
+import { Button, TableBody } from '../../../node_modules/@mui/material/index';
 export const columns = [
   {
     id: 1,
@@ -25,73 +7,34 @@ export const columns = [
   },
   {
     id: 2,
-    label: 'Warehouse Name'
+    label: 'Code'
   },
   {
     id: 3,
-    label: 'Phone'
+    label: 'From'
   },
   {
     id: 4,
-    label: 'Address'
+    label: 'To'
   },
 
   {
     id: 6,
-    label: 'Create At'
+    label: 'Contact'
   },
   {
     id: 7,
-    label: 'Action'
+    label: 'Create At'
+  },
+  {
+    id: 8,
+    label: 'Status'
   }
 ];
-const WarehousePage = () => {
-  const dispatch = useDispatch();
-  const { data: dataUser } = useSelector((state) => state.auth.user);
-  const { data: dataWarehouse } = useSelector((state) => state.warehouse.getwarehouse);
-
-  const [openDialog, setOpenDialog] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [id, setId] = useState();
-  // const [dataWarehouse, setDataWarehouse] = useState([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleDeleteWarehouse = (id) => {
-    dispatch(actionDeleteWarehouse(id)).then((res) => {
-      if (res?.payload?.success) {
-        dispatch(actionGetWarehouse());
-      }
-    });
-  };
-
-  const handleUpdateWarehouse = (id) => {
-    dispatch(actionGetDescriptionWarehouse(id)).then((res) => {
-      if (res?.payload?.success) {
-        setOpen(true);
-        setId(id);
-      }
-    });
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-  useEffect(() => {
-    dispatch(actionGetWarehouse());
-  }, []);
-  console.log(dataWarehouse?.warehouses);
+const WarehouseReceipt = () => {
   return (
-    <div className="flex container flex-col gap-10 items-end">
-      <button onClick={() => setOpenDialog(true)} className="mr-10 px-5 py-1.5 text-white font-semibold rounded-lg bg-primary-8">
-        + Add Warehouse
-      </button>
-      {openDialog && <DialogWarehouse open={openDialog} setOpen={setOpenDialog} />}
+    <div className="flex container flex-col gap-10 items-start">
+      <button className="mr-10 px-5 py-1.5 text-white font-semibold rounded-lg bg-primary-8">Create Warehouse Receipt</button>
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">
@@ -104,7 +47,7 @@ const WarehousePage = () => {
                 ))}
               </TableRow>
             </TableHead>
-            <TableBody>
+            {/* <TableBody>
               {dataWarehouse?.warehouses?.length > 0 ? (
                 dataWarehouse?.warehouses.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   return (
@@ -116,7 +59,6 @@ const WarehousePage = () => {
                         <TableCell align="center">
                           <p className="min-w-[150px]">{row?.address}</p>
                         </TableCell>
-                        {/* <TableCell>{row?.status === 1 ? 'Default' : ''}</TableCell> */}
                         <TableCell align="center">
                           <p className="min-w-[200px]">{DateFormat(row?.createdAt)}</p>
                         </TableCell>
@@ -151,10 +93,10 @@ const WarehousePage = () => {
                   </TableCell>
                 </TableRow>
               )}
-            </TableBody>
+            </TableBody> */}
           </Table>
         </TableContainer>
-        <TablePagination
+        {/* <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
           count={dataWarehouse?.warehouses.length}
@@ -162,10 +104,10 @@ const WarehousePage = () => {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+        /> */}
       </Paper>
     </div>
   );
 };
 
-export default WarehousePage;
+export default WarehouseReceipt;

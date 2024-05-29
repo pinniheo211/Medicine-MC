@@ -15,9 +15,10 @@ const Typography = Loadable(lazy(() => import('pages/components-overview/Typogra
 const Profile = Loadable(lazy(() => import('pages/profile')));
 const Product = Loadable(lazy(() => import('pages/product')));
 const Warehouse = Loadable(lazy(() => import('pages/warehouse')));
+const WarehouseReceipt = Loadable(lazy(() => import('pages/warehouse-receipt')));
+const WarehouseExport = Loadable(lazy(() => import('pages/warehouse-export')));
 const Shadow = Loadable(lazy(() => import('pages/components-overview/Shadow')));
 const AntIcons = Loadable(lazy(() => import('pages/components-overview/AntIcons')));
-
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -35,6 +36,18 @@ const MainRoutes = {
     {
       path: '/dashboard/ware-house',
       element: <Warehouse />
+    },
+    {
+      path: '/dashboard/products',
+      element: <Product />
+    },
+    {
+      path: '/dashboard/warehouse-recipes',
+      element: <WarehouseReceipt />
+    },
+    {
+      path: '/dashboard/warehouse-export',
+      element: <WarehouseExport />
     },
     {
       path: '/dashboard/products',

@@ -3,8 +3,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 import { TextField } from '@mui/material';
-import { SCHEMA_LOGIN } from 'utils/schema';
-import { useDispatch, useSelector } from 'react-redux';
+import { SCHEMA_FORGOT, SCHEMA_LOGIN } from 'utils/schema';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 // material-ui
@@ -17,18 +17,17 @@ import FirebaseSocial from './FirebaseSocial';
 import AnimateButton from 'components/@extended/AnimateButton';
 
 // assets
-import { actionLogin } from 'store/reducers/auth';
+import { actionForgotPass, actionLogin } from 'store/reducers/auth';
 import { renderRouterAccept } from 'utils/helper';
 import { useLocation } from 'react-router-dom';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
-const AuthLogin = () => {
+const AuthForgot = () => {
   const [checked, setChecked] = React.useState(false);
   const location = useLocation();
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = React.useState(false);
-  const { loading } = useSelector((state) => state.auth.login);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -45,23 +44,12 @@ const AuthLogin = () => {
   } = useForm({
     mode: 'onChange',
     defaultValues: {
-      email: null,
-      password: null
+      email: null
     },
-    resolver: yupResolver(SCHEMA_LOGIN)
+    resolver: yupResolver(SCHEMA_FORGOT)
   });
   const onSubmit = (data) => {
-    const loginData = {
-      email: data?.email,
-      password: data?.password
-    };
-
-    dispatch(actionLogin(loginData)).then((res) => {
-      if (res?.payload?.sucess) {
-        localStorage.setItem('access_token', res?.payload?.accessToken);
-        navigate('/dashboard/default');
-      }
-    });
+    dispatch(actionForgotPass(data?.email)).then((res) => {});
   };
 
   useEffect(() => {
@@ -84,40 +72,18 @@ const AuthLogin = () => {
             />
           </Stack>
         </Grid>
-        <Grid item xs={12}>
-          <Stack spacing={1}>
-            <Controller
-              name="password"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  type="password"
-                  fullWidth
-                  error={Boolean(errors.password)}
-                  helperText={errors.password?.message || ''}
-                  label="Password"
-                />
-              )}
-            />
-          </Stack>
-        </Grid>
 
         <Grid item xs={12} sx={{ mt: -1 }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-            <a className="text-primary-8 text-xs" href="/forgot-password">
-              Forgot your password?
-            </a>
-          </Stack>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}></Stack>
         </Grid>
 
         <Grid item xs={12}>
           <AnimateButton>
             <button
-              disabled={loading}
-              className="disabled:cursor-not-allowed disabled:opacity-50 w-full  px-5 py-2 text-white font-semibold rounded-lg bg-primary-8"
+              // disabled={loading}
+              className="disabled:cursor-not-allowed disabled:opacity-50 w-full px-5 py-2 text-white font-semibold rounded-lg bg-primary-8"
             >
-              Login
+              Send
             </button>
           </AnimateButton>
         </Grid>
@@ -126,4 +92,4 @@ const AuthLogin = () => {
   );
 };
 
-export default AuthLogin;
+export default AuthForgot;

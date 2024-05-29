@@ -9,20 +9,21 @@ import { Controller } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { SCHEMA_NEWWAREHOUSE } from 'utils/schema';
-import { useState } from 'react';
-import { actionDoCreateWarehouse, actionGetWarehouse } from 'store/reducers/warehouse';
+import { useEffect, useState } from 'react';
+import { actionDoCreateWarehouse, actionGetWarehouse, actionUpdateWarehouse } from 'store/reducers/warehouse';
 import { yupResolver } from '@hookform/resolvers/yup';
 
-export default function DialogWarehouse({ open, setOpen }) {
+export default function DialogUpdateWarehouse({ open, setOpen, id }) {
   const dispatch = useDispatch();
   const [file, setFile] = useState();
-  const { data: dataProfile } = useSelector((state) => state.auth.user);
+  const { data: dataDesWarehouse } = useSelector((state) => state.warehouse.getDesWarehouse);
   const handleClose = () => {
     setOpen(false);
   };
 
   const {
     control,
+    setValue,
     handleSubmit,
     formState: { errors }
   } = useForm({
@@ -34,19 +35,28 @@ export default function DialogWarehouse({ open, setOpen }) {
     },
     resolver: yupResolver(SCHEMA_NEWWAREHOUSE)
   });
-  const handleNew = (data) => {
+  const handleUpdate = (data) => {
     const formData = {
-      name: data?.name,
-      address: data?.address,
-      phone: data?.phone
+      id: id,
+      body: {
+        name: data?.name,
+        address: data?.address,
+        phone: data?.phone
+      }
     };
-    dispatch(actionDoCreateWarehouse(formData)).then((res) => {
+    dispatch(actionUpdateWarehouse(formData)).then((res) => {
       if (res?.payload?.success) {
         dispatch(actionGetWarehouse());
         setOpen(false);
       }
     });
   };
+
+  useEffect(() => {
+    setValue('name', dataDesWarehouse?.description?.name);
+    setValue('address', dataDesWarehouse?.description?.address);
+    setValue('phone', dataDesWarehouse?.description?.phone);
+  }, []);
 
   return (
     <>
@@ -64,7 +74,7 @@ export default function DialogWarehouse({ open, setOpen }) {
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Add New Warehouse
+          Update Warehouse
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -79,7 +89,7 @@ export default function DialogWarehouse({ open, setOpen }) {
           <CloseIcon />
         </IconButton>
         <DialogContent dividers>
-          <form onSubmit={handleSubmit(handleNew)}>
+          <form onSubmit={handleSubmit(handleUpdate)}>
             <div className="flex flex-col gap-5">
               <div className="flex items-center gap-5">
                 <Controller
@@ -120,8 +130,8 @@ export default function DialogWarehouse({ open, setOpen }) {
               </div>
             </div>
             <div className="text-right mt-10">
-              <button className="min-w-[100px] disabled:cursor-not-allowed disabled:bg-slate-600 rounded-lg bg-primary-8 py-1.5 hover:-translate-y-1 transition-all duration-300 text-white">
-                submit
+              <button className="min-w-[100px] disabled:cursor-not-allowed rounded-lg bg-primary-8 py-1.5 hover:-translate-y-1 transition-all duration-300 text-white">
+                Update
               </button>
             </div>
           </form>

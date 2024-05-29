@@ -27,7 +27,6 @@ const MainLayout = () => {
   const dispatch = useDispatch();
 
   const { drawerOpen } = useSelector((state) => state.menu);
-
   // drawer toggler
   const [open, setOpen] = useState(drawerOpen);
   const handleDrawerToggle = () => {
@@ -58,9 +57,7 @@ const MainLayout = () => {
       navigate('/');
     } else {
       if (user) {
-        dispatch(actionGetUser()).then((res) => {
-          console.log(res);
-        });
+        dispatch(actionGetUser());
       }
     }
   }, [navigate]);

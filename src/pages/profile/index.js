@@ -13,7 +13,7 @@ import { Button } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UploadImage from 'components/UploadImage';
-
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -46,10 +46,10 @@ const ProfilePage = () => {
   });
 
   useEffect(() => {
-    setValue('username', dataProfile?.userData?.username);
-    setValue('email', dataProfile?.userData?.email);
-    setValue('phone', dataProfile?.userData?.phone);
-    setValue('company', dataProfile?.userData?.company);
+    setValue('firstname', dataProfile?.rs?.firstname);
+    setValue('lastname', dataProfile?.rs?.lastname);
+    setValue('email', dataProfile?.rs?.email);
+    setValue('mobile', dataProfile?.rs?.mobile);
   }, []);
   return (
     <div className="w-full">
@@ -58,7 +58,7 @@ const ProfilePage = () => {
           <Paper elevation={3}>
             <div className="py-10  flex justify-center gap-5 flex-col items-center">
               <Avatar src="/" sx={{ width: 100, height: 100 }}>
-                {dataProfile?.userData?.username}
+                {dataProfile?.rs?.lastname}
               </Avatar>
               <span className="text-xs text-gray-600 w-[200px] text-center">Allowed *.jpeg, *.jpg, *.png, *.gif max size of 3 Mb</span>
               <div className="grid grid-cols-2 gap-5">
@@ -79,15 +79,28 @@ const ProfilePage = () => {
               <h1 className="text-xl font-bold mb-10">Edit Profile</h1>
               <div className="grid grid-cols-2 gap-5">
                 <Controller
-                  name="username"
+                  name="firstname"
                   control={control}
                   render={({ field }) => (
                     <TextField
                       {...field}
                       fullWidth
-                      error={Boolean(errors.username)}
-                      helperText={errors.username?.message || ''}
-                      label="Username"
+                      error={Boolean(errors.firstname)}
+                      helperText={errors.firstname?.message || ''}
+                      label="First Name"
+                    />
+                  )}
+                />
+                <Controller
+                  name="lastname"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      error={Boolean(errors.lastname)}
+                      helperText={errors.lastname?.message || ''}
+                      label="Last Name"
                     />
                   )}
                 />
@@ -99,25 +112,23 @@ const ProfilePage = () => {
                   )}
                 />
                 <Controller
-                  name="phone"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField {...field} fullWidth error={Boolean(errors.phone)} helperText={errors.phone?.message || ''} label="Phone" />
-                  )}
-                />
-                <Controller
-                  name="company"
+                  name="mobile"
                   control={control}
                   render={({ field }) => (
                     <TextField
                       {...field}
                       fullWidth
-                      error={Boolean(errors.company)}
-                      helperText={errors.company?.message || ''}
-                      label="Company"
+                      error={Boolean(errors.mobile)}
+                      helperText={errors.mobile?.message || ''}
+                      label="Phone"
                     />
                   )}
                 />
+              </div>
+              <div className="w-full mt-5">
+                <Button variant="outlined" startIcon={<DriveFileRenameOutlineIcon />}>
+                  Update
+                </Button>
               </div>
             </div>
           </Paper>

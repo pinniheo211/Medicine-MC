@@ -7,7 +7,7 @@ import { Box, Grid } from '@mui/material';
 import AuthCard from './AuthCard';
 import Logo from 'components/Logo';
 import AuthFooter from 'components/cards/AuthFooter';
-
+import logo from '../../assets/images/MEDICINE.png';
 // assets
 import AuthBackground from 'assets/images/auth/AuthBackground';
 
@@ -25,7 +25,7 @@ const AuthWrapper = ({ children }) => (
       }}
     >
       <Grid item xs={12} sx={{ ml: 3, mt: 3 }}>
-        <Logo />
+        <img className="w-[200px] " alt="logo" src={logo} />
       </Grid>
       <Grid item xs={12}>
         <Grid

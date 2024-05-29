@@ -1,12 +1,14 @@
 // assets
-import { DashboardOutlined, UserOutlined, HomeOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import { DashboardOutlined, UserOutlined, HomeOutlined, ShoppingCartOutlined, ImportOutlined, ExportOutlined } from '@ant-design/icons';
 
 // icons
 const icons = {
   DashboardOutlined,
   UserOutlined,
   HomeOutlined,
-  ShoppingCartOutlined
+  ShoppingCartOutlined,
+  ImportOutlined,
+  ExportOutlined
 };
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
@@ -47,6 +49,22 @@ const dashboard = {
       type: 'item',
       url: '/dashboard/ware-house',
       icon: icons.HomeOutlined,
+      breadcrumbs: true
+    },
+    {
+      id: 'warehouse-receipt',
+      title: 'Warehouse Receipt',
+      type: 'item',
+      url: '/dashboard/warehouse-recipes',
+      icon: icons.ImportOutlined,
+      breadcrumbs: true
+    },
+    {
+      id: 'warehouse-export',
+      title: 'Warehouse Export',
+      type: 'item',
+      url: '/dashboard/warehouse-export',
+      icon: icons.ExportOutlined,
       breadcrumbs: true
     }
   ]

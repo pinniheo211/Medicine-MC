@@ -1,5 +1,3 @@
-import Button from '@mui/material/Button';
-import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -10,26 +8,30 @@ import { useForm } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 import UploadImage from 'components/UploadImage';
 import { useDispatch } from 'react-redux';
-import { actionAddNewProduct, actionGetProduct } from 'store/reducers/product';
 import { useSelector } from 'react-redux';
 import { CurrencyNumericFormat } from 'components/Mui/NumericFormat';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SCHEMA_NEW_PRODUCT } from 'utils/schema';
-import { useState } from 'react';
-import LoaderStyleOne from 'components/LoadingComponent';
+import { useEffect, useState } from 'react';
+import { actionGetDetailProduct, actionGetProduct, actionUpdateProduct } from 'store/reducers/product';
 import CustomAutocomplete from 'components/Mui/CustomAutoComplete';
 
-export default function DialogProduct({ open, setOpen, userId }) {
+export default function DialogUpdateForm({ open, setOpen, id }) {
   const dispatch = useDispatch();
-  const [file, setFile] = useState();
+  const [file, setFile] = useState([]);
+  const [image, setImage] = useState([]);
+
+  const { data: dataDetailProduct } = useSelector((state) => state.product.detailProduct);
   const { data: dataCategory } = useSelector((state) => state.category.getCategory);
   const { data: dataBrand } = useSelector((state) => state.brand.getBrand);
   const handleClose = () => {
     setOpen(false);
   };
+  console.log(dataDetailProduct);
 
   const {
     control,
+    setValue,
     handleSubmit,
     formState: { errors }
   } = useForm({
@@ -45,26 +47,45 @@ export default function DialogProduct({ open, setOpen, userId }) {
     },
     resolver: yupResolver(SCHEMA_NEW_PRODUCT)
   });
+
   const handleNew = (data) => {
     const dataNew = new FormData();
     dataNew.append('title', data?.title);
     dataNew.append('price', data?.price);
-    dataNew.append('brand', data?.brand?._id);
-    dataNew.append('category', data?.category?._id);
+    dataNew.append('brand', data?.brand);
     dataNew.append('description', data?.description);
-    dataNew.append('images', file);
-
-    dispatch(actionAddNewProduct(dataNew)).then((res) => {
+    dataNew.append('slug', data?.slug);
+    const dataForm = {
+      id: id,
+      body: {
+        title: data?.title,
+        price: data?.price,
+        brand: data?.brand,
+        description: data?.description
+      }
+    };
+    dispatch(actionUpdateProduct(dataForm)).then((res) => {
+      setOpen(false);
       if (res?.payload?.success) {
-        dispatch(actionGetProduct()).then((res) => {
-          if (res?.payload?.success) {
-            setOpen(false);
-          }
-        });
+        setOpen(false);
+        dispatch(actionGetProduct());
       }
     });
   };
-  console.log(dataBrand?.brands);
+  useEffect(() => {
+    if (dataDetailProduct) {
+      setValue('title', dataDetailProduct?.productData?.title);
+      setValue('brand', dataDetailProduct?.productData?.brand);
+      setValue('category', dataDetailProduct?.productData?.category);
+      setValue('description', dataDetailProduct?.productData?.description);
+      setValue('price', dataDetailProduct?.productData?.price);
+      setValue('slug', dataDetailProduct?.productData?.slug);
+      setImage(dataDetailProduct?.productData?.images);
+    }
+  }, []);
+
+  console.log(dataDetailProduct?.productData?.images);
+
   return (
     <>
       <Dialog
@@ -81,7 +102,7 @@ export default function DialogProduct({ open, setOpen, userId }) {
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Add New Product
+          Update Product
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -189,7 +210,7 @@ export default function DialogProduct({ open, setOpen, userId }) {
                   />
                 )}
               />
-              <UploadImage setFile={setFile} />
+              <UploadImage setFile={setFile} file={file} image={image} />
             </div>
             <div className="text-right mt-10">
               <button className="min-w-[100px] disabled:cursor-not-allowed disabled:bg-slate-600 rounded-lg bg-primary-8 py-1.5 text-white">

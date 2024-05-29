@@ -27,6 +27,10 @@ import ReportAreaChart from './ReportAreaChart';
 import SalesColumnChart from './SalesColumnChart';
 import MainCard from 'components/MainCard';
 import AnalyticEcommerce from 'components/cards/statistics/AnalyticEcommerce';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
+import Inventory2Icon from '@mui/icons-material/Inventory2';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 // assets
 import { GiftOutlined, MessageOutlined, SettingOutlined } from '@ant-design/icons';
 import avatar1 from 'assets/images/users/avatar-1.png';
@@ -34,6 +38,9 @@ import avatar2 from 'assets/images/users/avatar-2.png';
 import avatar3 from 'assets/images/users/avatar-3.png';
 import avatar4 from 'assets/images/users/avatar-4.png';
 import { renderRouterAccept } from 'utils/helper';
+import { useDispatch, useSelector } from 'react-redux';
+import { actionGetWarehouse } from 'store/reducers/warehouse';
+import { actionGetProduct } from 'store/reducers/product';
 // avatar style
 const avatarSX = {
   width: 36,
@@ -70,9 +77,17 @@ const status = [
 // ==============================|| DASHBOARD - DEFAULT ||============================== //
 
 const DashboardDefault = () => {
+  const dispatch = useDispatch();
+  const { data: dataWarehouse } = useSelector((state) => state.warehouse.getwarehouse);
+  const { data: dataProduct } = useSelector((state) => state.product.getProduct);
   const [value, setValue] = useState('today');
   const [slot, setSlot] = useState('week');
-
+  console.log(dataWarehouse);
+  useEffect(() => {
+    dispatch(actionGetWarehouse());
+    dispatch(actionGetProduct());
+  }, []);
+  console.log(dataProduct);
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
       {/* row 1 */}
@@ -80,16 +95,38 @@ const DashboardDefault = () => {
         <Typography variant="h5">Dashboard</Typography>
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Page Views" count="4,42,236" percentage={59.3} extra="35,000" />
+        <AnalyticEcommerce
+          title="Total Warehouses"
+          count={dataWarehouse ? dataWarehouse?.warehouses?.length : 0}
+          // percentage={59.3}
+          // extra="35,000"
+          icon={<WarehouseIcon />}
+        />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Users" count="78,250" percentage={70.5} extra="8,900" />
+        <AnalyticEcommerce title="Total Products" count={dataProduct ? dataProduct?.productDatas?.length : 0} icon={<Inventory2Icon />} />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Order" count="18,800" percentage={27.4} isLoss color="warning" extra="1,943" />
+        <AnalyticEcommerce
+          title="Total Stock Receipt"
+          count="18,800"
+          percentage={27.4}
+          isLoss
+          color="warning"
+          extra="1,943"
+          icon={<ReceiptLongIcon />}
+        />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Sales" count="$35,078" percentage={27.4} isLoss color="warning" extra="$20,395" />
+        <AnalyticEcommerce
+          title="Total Stock Dispatch"
+          icon={<FileUploadIcon />}
+          count="$35,078"
+          percentage={27.4}
+          isLoss
+          color="warning"
+          extra="$20,395"
+        />
       </Grid>
 
       <Grid item md={8} sx={{ display: { sm: 'none', md: 'block', lg: 'none' } }} />
@@ -148,7 +185,7 @@ const DashboardDefault = () => {
       </Grid>
 
       {/* row 3 */}
-      <Grid item xs={12} md={7} lg={8}>
+      {/* <Grid item xs={12} md={7} lg={8}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
             <Typography variant="h5">Recent Orders</Typography>
@@ -158,8 +195,8 @@ const DashboardDefault = () => {
         <MainCard sx={{ mt: 2 }} content={false}>
           <OrdersTable />
         </MainCard>
-      </Grid>
-      <Grid item xs={12} md={5} lg={4}>
+      </Grid> */}
+      {/* <Grid item xs={12} md={5} lg={4}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
             <Typography variant="h5">Analytics Report</Typography>
@@ -183,10 +220,10 @@ const DashboardDefault = () => {
           </List>
           <ReportAreaChart />
         </MainCard>
-      </Grid>
+      </Grid> */}
 
       {/* row 4 */}
-      <Grid item xs={12} md={7} lg={8}>
+      {/* <Grid item xs={12} md={7} lg={8}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
             <Typography variant="h5">Sales Report</Typography>
@@ -217,8 +254,8 @@ const DashboardDefault = () => {
           </Stack>
           <SalesColumnChart />
         </MainCard>
-      </Grid>
-      <Grid item xs={12} md={5} lg={4}>
+      </Grid> */}
+      {/* <Grid item xs={12} md={5} lg={4}>
         <Grid container alignItems="center" justifyContent="space-between">
           <Grid item>
             <Typography variant="h5">Transaction History</Typography>
@@ -336,7 +373,7 @@ const DashboardDefault = () => {
             </Button>
           </Stack>
         </MainCard>
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 };

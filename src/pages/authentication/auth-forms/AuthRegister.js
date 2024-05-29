@@ -1,7 +1,7 @@
 // import { useState } from 'react';
 
 // material-ui
-import { Divider, FormControl, Grid, Link, Stack, Typography } from '@mui/material';
+import { Divider, Grid, Link, Stack, Typography } from '@mui/material';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 // third party
@@ -13,7 +13,7 @@ import FirebaseSocial from './FirebaseSocial';
 import { useForm } from 'react-hook-form';
 
 import { Controller } from 'react-hook-form';
-import { TextField } from '@mui/material';
+import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField } from '@mui/material';
 import { SCHEMA_REGISTER } from 'utils/schema';
 import { useDispatch } from 'react-redux';
 import { actionRegister } from 'store/reducers/auth';
@@ -21,8 +21,8 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { renderRouterAccept } from 'utils/helper';
 import { useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
-
+import { useEffect, useState } from 'react';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 // ============================|| FIREBASE - REGISTER ||============================ //
 
 const AuthRegister = () => {
@@ -30,7 +30,18 @@ const AuthRegister = () => {
   const navigate = useNavigate();
   const { loading } = useSelector((state) => state.auth.register);
   const dispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState([false, false, false]);
+  const handleClickShowPassword = (index) => {
+    setShowPassword((prevShowPasswords) => {
+      const newShowPasswords = [...prevShowPasswords];
+      newShowPasswords[index] = !prevShowPasswords[index];
+      return newShowPasswords;
+    });
+  };
 
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
   const {
     control,
     handleSubmit,
@@ -39,26 +50,26 @@ const AuthRegister = () => {
   } = useForm({
     mode: 'onChange',
     defaultValues: {
-      username: null,
-      email: null,
-      phone: null,
-      company: null,
-      password: null
+      firstname: '',
+      lastname: '',
+      password: '',
+      email: '',
+      mobile: ''
     },
     resolver: yupResolver(SCHEMA_REGISTER)
   });
 
   const onSubmit = (data) => {
     const registerData = {
-      username: data?.name,
+      firstname: data?.firstname,
+      lastname: data?.lastname,
+      password: data?.password,
       email: data?.email,
-      phone: data?.phone,
-      company: data?.company,
-      password: data?.password
+      mobile: data?.mobile
     };
 
     dispatch(actionRegister(registerData)).then((res) => {
-      if (res?.payload?.err === 0) {
+      if (res?.payload?.sucess) {
         navigate('/login');
       }
     });
@@ -78,15 +89,71 @@ const AuthRegister = () => {
           <Grid item xs={12}>
             <Stack spacing={1}>
               <Controller
-                name="name"
+                name="firstname"
                 control={control}
                 render={({ field }) => (
-                  <TextField {...field} fullWidth error={Boolean(errors.name)} helperText={errors.name?.message || ''} label="Name" />
+                  <TextField
+                    {...field}
+                    fullWidth
+                    error={Boolean(errors.firstname)}
+                    helperText={errors.firstname?.message || ''}
+                    label="First Name"
+                  />
                 )}
               />
             </Stack>
           </Grid>
 
+          <Grid item xs={12}>
+            <Stack spacing={1}>
+              <Controller
+                name="lastname"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    fullWidth
+                    error={Boolean(errors.lastname)}
+                    helperText={errors.lastname?.message || ''}
+                    label="Last Name"
+                  />
+                )}
+              />
+            </Stack>
+          </Grid>
+          <Grid item xs={12}>
+            <Stack spacing={1}>
+              <FormControl variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password">Password*</InputLabel>
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({ field }) => (
+                    <OutlinedInput
+                      {...field}
+                      id="outlined-adornment-password"
+                      type={showPassword[0] ? 'text' : 'password'}
+                      error={Boolean(errors.password)}
+                      helperText={errors.password?.message || ''}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={() => handleClickShowPassword(0)}
+                            onMouseDown={(event) => event.preventDefault()}
+                            edge="end"
+                          >
+                            {showPassword[0] ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                      label="Password*"
+                    />
+                  )}
+                />
+              </FormControl>
+            </Stack>
+          </Grid>
           <Grid item xs={12}>
             <Stack spacing={1}>
               <Controller
@@ -101,46 +168,10 @@ const AuthRegister = () => {
           <Grid item xs={12}>
             <Stack spacing={1}>
               <Controller
-                name="phone"
+                name="mobile"
                 control={control}
                 render={({ field }) => (
-                  <TextField {...field} fullWidth error={Boolean(errors.phone)} helperText={errors.phone?.message || ''} label="Phone" />
-                )}
-              />
-            </Stack>
-          </Grid>
-          <Grid item xs={12}>
-            <Stack spacing={1}>
-              <Controller
-                name="company"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    error={Boolean(errors.company)}
-                    helperText={errors.company?.message || ''}
-                    label="Company"
-                  />
-                )}
-              />
-            </Stack>
-          </Grid>
-          <Grid item xs={12}>
-            <Stack spacing={1}>
-              <Controller
-                name="password"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    fullWidth
-                    type="password"
-                    error={Boolean(errors.password)}
-                    helperText={errors.password?.message || ''}
-                    label="Password"
-                    placeholder="******"
-                  />
+                  <TextField {...field} fullWidth error={Boolean(errors.mobile)} helperText={errors.mobile?.message || ''} label="Mobile" />
                 )}
               />
             </Stack>
@@ -149,7 +180,7 @@ const AuthRegister = () => {
           <Grid item xs={12}>
             <button
               disabled={loading}
-              className="disabled:cursor-not-allowed disabled:opacity-50 w-full py-3 rounded-lg bg-qyellow text-white"
+              className="disabled:cursor-not-allowed disabled:opacity-50 w-full px-5 py-2 text-white font-semibold rounded-lg bg-primary-8"
             >
               Create Account
             </button>

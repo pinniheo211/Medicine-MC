@@ -17,8 +17,9 @@ const DrawerHeader = ({ open }) => {
     // only available in paid version
     <DrawerHeaderStyled theme={theme} open={open}>
       <Stack direction="row" spacing={1} alignItems="center">
-        <Logo />
-        <Chip
+        {/* <Logo /> */}
+        <img className="w-[200px]" src="/public/logo.png" alt="logo" />
+        {/* <Chip
           label={process.env.REACT_APP_VERSION}
           size="small"
           sx={{ height: 16, '& .MuiChip-label': { fontSize: '0.625rem', py: 0.25 } }}
@@ -26,7 +27,7 @@ const DrawerHeader = ({ open }) => {
           href="https://github.com/codedthemes/mantis-free-react-admin-template"
           target="_blank"
           clickable
-        />
+        /> */}
       </Stack>
     </DrawerHeaderStyled>
   );

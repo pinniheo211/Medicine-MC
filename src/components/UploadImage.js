@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Image, Upload } from 'antd';
 import { Button } from 'antd';
@@ -7,7 +7,8 @@ const getBase64 = (file) =>
     const reader = new FileReader();
     reader.readAsDataURL(file);
   });
-const UploadImage = ({ setFile }) => {
+const UploadImage = ({ setFile, image }) => {
+  console.log(image);
   return (
     <>
       <Upload.Dragger
@@ -16,6 +17,7 @@ const UploadImage = ({ setFile }) => {
         action={'http://localhost:3000/'}
         showUploadList={{ showRemoveIcon: true }}
         accpet=".png,.jpeg"
+        fileList={image}
         beforeUpload={(file) => {
           setFile(file);
           return false;

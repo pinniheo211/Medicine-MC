@@ -91,6 +91,7 @@ const Profile = () => {
   };
 
   const iconBackColorOpen = 'grey.300';
+  console.log(dataUser?.rs);
   return (
     <Box sx={{ flexShrink: 0, ml: 0.75 }}>
       <ButtonBase
@@ -108,7 +109,7 @@ const Profile = () => {
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
-          <div className="text-black font-bold">{dataUser?.userData?.username}</div>
+          <div className="text-black font-bold">{dataUser?.rs?.firstname + ' ' + dataUser?.rs?.lastname}</div>
         </Stack>
       </ButtonBase>
       <Popper
@@ -151,9 +152,9 @@ const Profile = () => {
                           <Stack direction="row" spacing={1.25} alignItems="center">
                             <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
                             <Stack>
-                              <Typography variant="h6">{dataUser?.userData?.username}</Typography>
+                              <Typography variant="h6">{dataUser?.rs?.firstname + ' ' + dataUser?.rs?.lastname}</Typography>
                               <Typography variant="body2" color="textSecondary">
-                                {dataUser?.userData?.email}
+                                {dataUser?.rs?.email}
                               </Typography>
                             </Stack>
                           </Stack>
@@ -163,7 +164,7 @@ const Profile = () => {
                     {open && (
                       <>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                          <Tabs variant="fullWidth" value={value} onChange={handleChange} aria-label="profile tabs">
+                          {/* <Tabs variant="fullWidth" value={value} onChange={handleChange} aria-label="profile tabs">
                             <Tab
                               sx={{
                                 display: 'flex',
@@ -188,7 +189,7 @@ const Profile = () => {
                               label="Setting"
                               {...a11yProps(1)}
                             />
-                          </Tabs>
+                          </Tabs> */}
                         </Box>
                         <TabPanel value={value} index={0} dir={theme.direction}>
                           <ProfileTab handleLogout={handleLogout} />

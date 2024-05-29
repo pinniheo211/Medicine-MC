@@ -30,7 +30,7 @@ module.exports = {
         'primary-5': '#FF415533',
         'primary-6': '#E4C1FE',
         'primary-7': '#F80492',
-        'primary-8': '#921CF5',
+        'primary-8': '#3366CC',
         black: '#011032',
         'black-2': '#02001D',
         green: '#43E353',
