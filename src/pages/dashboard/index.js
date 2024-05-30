@@ -39,7 +39,7 @@ import avatar3 from 'assets/images/users/avatar-3.png';
 import avatar4 from 'assets/images/users/avatar-4.png';
 import { renderRouterAccept } from 'utils/helper';
 import { useDispatch, useSelector } from 'react-redux';
-import { actionGetWarehouse } from 'store/reducers/warehouse';
+import { actionExportProduct, actionGetExport, actionGetImport, actionGetWarehouse } from 'store/reducers/warehouse';
 import { actionGetProduct } from 'store/reducers/product';
 // avatar style
 const avatarSX = {
@@ -80,14 +80,17 @@ const DashboardDefault = () => {
   const dispatch = useDispatch();
   const { data: dataWarehouse } = useSelector((state) => state.warehouse.getwarehouse);
   const { data: dataProduct } = useSelector((state) => state.product.getProduct);
+  const { data: dataImport } = useSelector((state) => state.warehouse.getImportProduct);
+  const { data: dataExport } = useSelector((state) => state.warehouse.getExportProduct);
   const [value, setValue] = useState('today');
   const [slot, setSlot] = useState('week');
-  console.log(dataWarehouse);
+  console.log(dataExport);
   useEffect(() => {
     dispatch(actionGetWarehouse());
     dispatch(actionGetProduct());
+    dispatch(actionGetImport());
+    dispatch(actionGetExport());
   }, []);
-  console.log(dataProduct);
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
       {/* row 1 */}
@@ -107,26 +110,10 @@ const DashboardDefault = () => {
         <AnalyticEcommerce title="Total Products" count={dataProduct ? dataProduct?.productDatas?.length : 0} icon={<Inventory2Icon />} />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce
-          title="Total Stock Receipt"
-          count="18,800"
-          percentage={27.4}
-          isLoss
-          color="warning"
-          extra="1,943"
-          icon={<ReceiptLongIcon />}
-        />
+        <AnalyticEcommerce title="Total Stock Receipt" count={dataImport?.importRecords?.length} isLoss icon={<ReceiptLongIcon />} />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce
-          title="Total Stock Dispatch"
-          icon={<FileUploadIcon />}
-          count="$35,078"
-          percentage={27.4}
-          isLoss
-          color="warning"
-          extra="$20,395"
-        />
+        <AnalyticEcommerce title="Total Stock Dispatch" icon={<FileUploadIcon />} count={dataExport?.exportRecords?.length} isLoss />
       </Grid>
 
       <Grid item md={8} sx={{ display: { sm: 'none', md: 'block', lg: 'none' } }} />

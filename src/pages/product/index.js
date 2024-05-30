@@ -136,18 +136,22 @@ const Product = () => {
                             <p className="min-w-max break-words line-clamp-3"> {row?.category?.title}</p>
                           </TableCell>
                           <TableCell>
-                            <p className="max-w-[200px] break-words line-clamp-3">{row?.description}</p>
+                            <p className="max-w-[100px] break-words line-clamp-3">{row?.description}</p>
                           </TableCell>
                           <TableCell align="center">
                             <div className="min-w-[200px] flex justify-center">
                               <img className="block w-[100px] h-[100px]" src={row?.images[0]} alt="product image" />
                             </div>
                           </TableCell>
-                          <TableCell>{row?.price}</TableCell>
-                          <TableCell>{DateFormat(row?.createdAt)}</TableCell>
+                          <TableCell>
+                            <p className="min-w-max">{row?.price} đ</p>
+                          </TableCell>
+                          <TableCell>
+                            <p className="max-w-[100px]">{DateFormat(row?.createdAt)}</p>
+                          </TableCell>
                           <TableCell align="center">
                             <div className="flex gap-3 items-center">
-                              <Button onClick={() => handleDelete(row?._id)} variant="outlined" startIcon={<DeleteIcon />}>
+                              <Button color="error" onClick={() => handleDelete(row?._id)} variant="outlined" startIcon={<DeleteIcon />}>
                                 Delete
                               </Button>
                               <Button onClick={() => handleUpdate(row?._id)} variant="outlined" startIcon={<EditIcon />}>

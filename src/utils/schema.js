@@ -44,3 +44,9 @@ export const SCHEMA_NEWWAREHOUSE = Yup.object().shape({
   phone: Yup.string().required('required').matches(phoneRegExp, 'Phone number is not valid').min(10, 'too short').max(10, 'too long'),
   address: Yup.string().required('Address is required')
 });
+
+export const SCHEMA_IMPORTPRODUCT = Yup.object().shape({
+  warehouseId: Yup.object().required('Warehouse is required'),
+  product: Yup.array().required('Product is required'),
+  address: Yup.string().required('Address is required')
+});

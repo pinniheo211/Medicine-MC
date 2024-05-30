@@ -7,6 +7,7 @@ import { Stack, Chip } from '@mui/material';
 // project import
 import DrawerHeaderStyled from './DrawerHeaderStyled';
 import Logo from 'components/Logo';
+import logo from '../../../../assets/images/MEDICINE.png';
 
 // ==============================|| DRAWER HEADER ||============================== //
 
@@ -18,7 +19,8 @@ const DrawerHeader = ({ open }) => {
     <DrawerHeaderStyled theme={theme} open={open}>
       <Stack direction="row" spacing={1} alignItems="center">
         {/* <Logo /> */}
-        <img className="w-[200px]" src="/public/logo.png" alt="logo" />
+        <img className="w-[150px]" src={logo} alt="logo" />
+
         {/* <Chip
           label={process.env.REACT_APP_VERSION}
           size="small"

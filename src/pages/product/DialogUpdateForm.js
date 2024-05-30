@@ -15,6 +15,7 @@ import { SCHEMA_NEW_PRODUCT } from 'utils/schema';
 import { useEffect, useState } from 'react';
 import { actionGetDetailProduct, actionGetProduct, actionUpdateProduct } from 'store/reducers/product';
 import CustomAutocomplete from 'components/Mui/CustomAutoComplete';
+import { DeleteOutlined } from '@ant-design/icons';
 
 export default function DialogUpdateForm({ open, setOpen, id }) {
   const dispatch = useDispatch();
@@ -210,7 +211,17 @@ export default function DialogUpdateForm({ open, setOpen, id }) {
                   />
                 )}
               />
-              <UploadImage setFile={setFile} file={file} image={image} />
+              {dataDetailProduct?.productData?.images?.map((img, index) => {
+                return (
+                  <div className="w-full flex flex-col gap-3">
+                    <div className="rounded-lg shadow border p-3 flex justify-between items-center">
+                      <img src={img} alt="image" className="w-[50px]" />
+                      <DeleteOutlined />
+                    </div>
+                  </div>
+                );
+              })}
+              {/* <UploadImage setFile={setFile} file={file} image={image} /> */}
             </div>
             <div className="text-right mt-10">
               <button className="min-w-[100px] disabled:cursor-not-allowed disabled:bg-slate-600 rounded-lg bg-primary-8 py-1.5 text-white">

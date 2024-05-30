@@ -50,7 +50,12 @@ export const warehouseService = {
   doCreateWarehouse: (data) => API.post('api/warehouse', data),
   deleteWarehouse: (id) => API.delete(`api/warehouse/${id}`),
   getDescriptionWarehouse: (id) => API.get(`api/warehouse/${id}`),
-  updateWarehouse: (data) => API.put(`api/warehouse/update/${data.id}`, data.body)
+  updateWarehouse: (data) => API.put(`api/warehouse/update/${data.id}`, data.body),
+  docreateImportProduct: (data) => API.post('/api/warehouse/import', data),
+  docreateExportProduct: (data) => API.post('/api/warehouse/export', data),
+  getImportProduct: () => API.get('/api/import-records'),
+  getExportProduct: () => API.get('/api/export-records/'),
+  getDescriptionImport: (id) => API.get(`api/export-records/${id}`)
 };
 
 export const CategoryService = {

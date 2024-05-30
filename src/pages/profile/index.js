@@ -54,7 +54,7 @@ const ProfilePage = () => {
   return (
     <div className="w-full">
       <Grid container spacing={2}>
-        <Grid item xs={5}>
+        {/* <Grid item xs={5}>
           <Paper elevation={3}>
             <div className="py-10  flex justify-center gap-5 flex-col items-center">
               <Avatar src="/" sx={{ width: 100, height: 100 }}>
@@ -72,8 +72,8 @@ const ProfilePage = () => {
               </div>
             </div>
           </Paper>
-        </Grid>
-        <Grid item xs={7}>
+        </Grid> */}
+        <Grid item xs={12}>
           <Paper elevation={3}>
             <div className="px-5 py-10">
               <h1 className="text-xl font-bold mb-10">Edit Profile</h1>

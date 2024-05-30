@@ -122,7 +122,12 @@ const WarehousePage = () => {
                         </TableCell>
                         <TableCell align="center">
                           <div className="flex w-full justify-center gap-3 items-center">
-                            <Button onClick={() => handleDeleteWarehouse(row?._id)} variant="outlined" startIcon={<DeleteIcon />}>
+                            <Button
+                              color="error"
+                              onClick={() => handleDeleteWarehouse(row?._id)}
+                              variant="outlined"
+                              startIcon={<DeleteIcon />}
+                            >
                               Delete
                             </Button>
                             <Button onClick={() => handleUpdateWarehouse(row?._id)} variant="outlined" startIcon={<EditIcon />}>
