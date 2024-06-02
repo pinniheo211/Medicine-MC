@@ -62,11 +62,11 @@ const WarehouseExport = () => {
     dispatch(actionGetDesExport(id));
   };
   useEffect(() => {
-    dispatch(actionGetProduct());
     dispatch(actionGetWarehouse());
+    dispatch(actionGetProduct());
     dispatch(actionGetExport());
   }, []);
-  console.log(dataExportProduct?.exportRecords);
+
   return (
     <div className="flex container flex-col gap-10 items-start">
       <button onClick={() => setOpenDialog(true)} className="mr-10 px-5 py-1.5 text-white font-semibold rounded-lg bg-primary-8">
@@ -86,8 +86,8 @@ const WarehouseExport = () => {
             </TableHead>
             {openDialog && <DialogExport open={openDialog} setOpen={setOpenDialog} />}
             <TableBody>
-              {dataExportProduct?.exportRecords?.length > 0 ? (
-                dataExportProduct?.exportRecords.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+              {dataExportProduct?.data?.length > 0 ? (
+                dataExportProduct?.data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   return (
                     <>
                       <TableRow hover role="checkbox" tabIndex={-1}>
@@ -99,7 +99,7 @@ const WarehouseExport = () => {
                           <p className="w-[100px] line-clamp-2">{row?.warehouse?.address}</p>
                         </TableCell>
                         <TableCell align="center">
-                          <p className="max-w-[200px]">{row?.address}</p>
+                          <p className="w-[200px]">{row?.address}</p>
                         </TableCell>
                         <TableCell align="center">
                           <p className="min-w-[150px]">{row?.products?.length}</p>
@@ -141,7 +141,7 @@ const WarehouseExport = () => {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={dataExportProduct?.exportRecords?.length || 0}
+          count={dataExportProduct?.data?.length || 0}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

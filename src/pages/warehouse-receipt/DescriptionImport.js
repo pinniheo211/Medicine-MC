@@ -1,5 +1,3 @@
-import * as React from 'react';
-import { useRef } from 'react';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -15,10 +13,11 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import DateFormat from 'utils/format';
 import { useReactToPrint } from 'react-to-print';
+import { useRef } from 'react';
 import { toast } from 'react-toastify';
-
+import DateFormat from 'utils/format';
+import { Tooltip } from '@mui/material';
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
     padding: theme.spacing(2)
@@ -28,21 +27,21 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   }
 }));
 
-export default function DescriptionExport({ open, setOpen }) {
+export default function DescriptionImport({ open, setOpen }) {
   const componentPDF = useRef();
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
   const generatePDF = useReactToPrint({
     content: () => componentPDF.current,
     documentTitle: 'Print This Document',
     onAfterPrint: () => toast.success('Data saved with PDF')
   });
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
   const handleClose = () => {
     setOpen(false);
   };
-  const { data: dataExport } = useSelector((state) => state.warehouse.getDesExportProduct);
-  console.log(dataExport);
+  const { data: dataDesImport } = useSelector((state) => state.warehouse.getDesImportProducts);
+  console.log(dataDesImport?.importRecord?.products);
   return (
     <BootstrapDialog
       sx={{
@@ -58,7 +57,7 @@ export default function DescriptionExport({ open, setOpen }) {
       open={open}
     >
       <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-        Description Export Product
+        Description Import Product
       </DialogTitle>
       <IconButton
         aria-label="close"
@@ -74,11 +73,11 @@ export default function DescriptionExport({ open, setOpen }) {
       </IconButton>
       <div ref={componentPDF} style={{ width: '100%' }}>
         <DialogContent dividers>
-          <div className="flex items-start md:flex-row lg:flex-row flex-col gap-10 mb-10">
-            <div className="w-full flex flex-col gap-3">
+          <div className="flex items-start gap-5 md:flex-row lg:flex-row flex-col">
+            <div className="w-full flex flex-col gap-5">
               <div className="flex items-center gap-3">
                 <p className="w-[120px]">From: </p>
-                <p>{dataExport?.exportRecord?.warehouse?.name}</p>
+                <p>{dataDesImport?.importRecord?.warehouse?.name}</p>
               </div>
               <div className="flex items-center gap-3">
                 <p className="w-[120px]">Activity type: </p>
@@ -87,30 +86,37 @@ export default function DescriptionExport({ open, setOpen }) {
             </div>
             <div className="w-full flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                <p className="w-[120px]">To: </p>
-                <p>{dataExport?.exportRecord?.warehouse?.address}</p>
+                <p className="w-[120px]">Create At: </p>
+                <p>{DateFormat(dataDesImport?.importRecord?.createdAt)}</p>
               </div>
               <div className="flex items-center gap-3">
-                <p className="w-[120px]">Create At: </p>
-                <p>{DateFormat(dataExport?.exportRecord?.warehouse?.createdAt)}</p>
+                <p className="w-[120px]">To: </p>
+                <p>{dataDesImport?.importRecord?.warehouse?.name}</p>
               </div>
             </div>
           </div>
-          <div>
+          <div className="mt-10">
             <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
               <TableHead>
                 <TableRow>
-                  <TableCell align="center">Product Name</TableCell>
+                  <TableCell align="left">Product Name</TableCell>
+                  <TableCell align="left">Description</TableCell>
                   <TableCell align="center">Image</TableCell>
                   <TableCell align="center">Quantity</TableCell>
                   <TableCell align="center">Price</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {dataExport?.exportRecord?.products?.map((rows) => {
+                {dataDesImport?.importRecord?.products?.map((rows) => {
+                  console.log(rows);
                   return (
                     <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                      <TableCell align="center">{rows?.product?.title}</TableCell>
+                      <TableCell align="left">{rows?.product?.title}</TableCell>
+                      <TableCell align="left">
+                        <Tooltip title={rows?.product?.description}>
+                          <p className="max-w-[200px] line-clamp-3">{rows?.product?.description}</p>
+                        </Tooltip>
+                      </TableCell>
                       <TableCell align="center">
                         <div className="flex justify-center">
                           <img className="w-[100px]" src={rows?.product?.images[0]} />
@@ -126,6 +132,7 @@ export default function DescriptionExport({ open, setOpen }) {
           </div>
         </DialogContent>
       </div>
+
       <DialogActions>
         <button onClick={generatePDF} className="my-5 mr-5 px-5 py-1.5 text-white font-semibold rounded-lg bg-primary-8">
           Print PDF

@@ -27,7 +27,6 @@ const actionGetDescriptionWarehouse = createAsyncThunk('warehouse/getDescription
     }
   } catch (error) {
     const message = error.response.data?.message || error.message;
-    toast.error(message);
     return error.response.data;
   }
 });
@@ -74,7 +73,6 @@ const actionImportProduct = createAsyncThunk('warehouse/import-product', async (
     }
   } catch (error) {
     const message = error.response.data?.message || error.message;
-    toast.error(message);
     return error.response.data;
   }
 });
@@ -104,7 +102,6 @@ const actionGetImport = createAsyncThunk('warehouse/get-import-product', async (
     }
   } catch (error) {
     const message = error.response.data?.message || error.message;
-    toast.error(message);
     return error.response.data;
   }
 });
@@ -118,12 +115,26 @@ const actionGetExport = createAsyncThunk('warehouse/get-export-product', async (
     }
   } catch (error) {
     const message = error.response.data?.message || error.message;
-    toast.error(message);
     return error.response.data;
   }
 });
 
 const actionGetDesExport = createAsyncThunk('warehouse/get-des-export-product', async (id) => {
+  try {
+    const res = await warehouseService.getDescriptionExport(id);
+    if (res.status === 200) {
+      return res.data;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    const message = error.response.data?.message || error.message;
+    toast.error(message);
+    return error.response.data;
+  }
+});
+
+const actionGetDesImport = createAsyncThunk('warehouse/get-des-import-product', async (id) => {
   try {
     const res = await warehouseService.getDescriptionImport(id);
     if (res.status === 200) {
@@ -206,6 +217,11 @@ const { reducer } = createSlice({
       error: ''
     },
     getDesExportProduct: {
+      loading: false,
+      data: null,
+      error: ''
+    },
+    getDesImportProducts: {
       loading: false,
       data: null,
       error: ''
@@ -343,6 +359,19 @@ const { reducer } = createSlice({
         state.getDesExportProduct.loading = false;
         state.getDesExportProduct.data = action.payload;
         state.getDesExportProduct.error = '';
+      })
+      .addCase(actionGetDesImport.pending, (state) => {
+        state.getDesImportProducts.loading = true;
+      })
+      .addCase(actionGetDesImport.rejected, (state, action) => {
+        state.getDesImportProducts.loading = false;
+        state.getDesImportProducts.error = action.payload;
+        state.getDesImportProducts.data = {};
+      })
+      .addCase(actionGetDesImport.fulfilled, (state, action) => {
+        state.getDesImportProducts.loading = false;
+        state.getDesImportProducts.data = action.payload;
+        state.getDesImportProducts.error = '';
       });
   }
 });
@@ -359,5 +388,6 @@ export {
   actionExportProduct,
   actionGetImport,
   actionGetExport,
-  actionGetDesExport
+  actionGetDesExport,
+  actionGetDesImport
 };

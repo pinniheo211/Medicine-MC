@@ -1,14 +1,15 @@
 import { Paper, Table, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
 import { Button, TableBody } from '../../../node_modules/@mui/material/index';
 import { useEffect, useState } from 'react';
-import DialogImport from './CustomDialogImport';
 import { useDispatch, useSelector } from 'react-redux';
-import { actionGetImport, actionGetWarehouse } from 'store/reducers/warehouse';
+import { actionGetDesExport, actionGetDesImport, actionGetImport, actionGetWarehouse } from 'store/reducers/warehouse';
 import { actionGetProduct } from 'store/reducers/product';
 import DateFormat from 'utils/format';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import DescriptionImport from './DescriptionImport';
+import DialogImport from './CustomDialogImport';
 export const columns = [
   {
     id: 1,
@@ -38,6 +39,7 @@ export const columns = [
 const WarehouseReceipt = () => {
   const dispatch = useDispatch();
   const [openDialog, setOpenDialog] = useState(false);
+  const [id, setId] = useState();
   const [open, setOpen] = useState(false);
   const { data: dataGetImport } = useSelector((state) => state.warehouse.getImportProduct);
   const [page, setPage] = useState(0);
@@ -48,6 +50,12 @@ const WarehouseReceipt = () => {
   };
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+  };
+
+  const handleDescription = (id) => {
+    setId(id);
+    setOpen(true);
+    dispatch(actionGetDesImport(id));
   };
   useEffect(() => {
     dispatch(actionGetWarehouse());
@@ -74,8 +82,8 @@ const WarehouseReceipt = () => {
             </TableHead>
             {openDialog && <DialogImport open={openDialog} setOpen={setOpenDialog} />}
             <TableBody>
-              {dataGetImport?.importRecords?.length > 0 ? (
-                dataGetImport?.importRecords.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+              {dataGetImport?.data?.length > 0 ? (
+                dataGetImport?.data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   return (
                     <>
                       <TableRow hover role="checkbox" tabIndex={-1}>
@@ -91,13 +99,13 @@ const WarehouseReceipt = () => {
                         </TableCell>
                         <TableCell align="center">
                           <div className="flex w-full justify-center gap-3 items-center">
-                            <span className="text-primary-8">
+                            <span className="text-primary-8" onClick={() => handleDescription(row?._id)}>
                               <RemoveRedEyeIcon />
                             </span>
                           </div>
                         </TableCell>
                       </TableRow>
-                      {/* {open && <DialogUpdateWarehouse open={open} setOpen={setOpen} id={id} />} */}
+                      {open && <DescriptionImport open={open} setOpen={setOpen} id={id} />}
                     </>
                   );
                 })

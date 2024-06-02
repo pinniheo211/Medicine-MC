@@ -55,7 +55,8 @@ export const warehouseService = {
   docreateExportProduct: (data) => API.post('/api/warehouse/export', data),
   getImportProduct: () => API.get('/api/import-records'),
   getExportProduct: () => API.get('/api/export-records/'),
-  getDescriptionImport: (id) => API.get(`api/export-records/${id}`)
+  getDescriptionExport: (id) => API.get(`api/export-records/${id}`),
+  getDescriptionImport: (id) => API.get(`api/import-records/${id}`)
 };
 
 export const CategoryService = {
