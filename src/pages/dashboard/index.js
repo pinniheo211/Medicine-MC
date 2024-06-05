@@ -91,6 +91,7 @@ const DashboardDefault = () => {
     dispatch(actionGetImport());
     dispatch(actionGetExport());
   }, []);
+
   return (
     <Grid container rowSpacing={4.5} columnSpacing={2.75}>
       {/* row 1 */}
@@ -110,10 +111,10 @@ const DashboardDefault = () => {
         <AnalyticEcommerce title="Total Products" count={dataProduct ? dataProduct?.productDatas?.length : 0} icon={<Inventory2Icon />} />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Stock Receipt" count={dataImport?.importRecords?.length} isLoss icon={<ReceiptLongIcon />} />
+        <AnalyticEcommerce title="Total Stock Receipt" count={dataImport?.data?.length || 0} isLoss icon={<ReceiptLongIcon />} />
       </Grid>
       <Grid item xs={12} sm={6} md={4} lg={3}>
-        <AnalyticEcommerce title="Total Stock Dispatch" icon={<FileUploadIcon />} count={dataExport?.exportRecords?.length} isLoss />
+        <AnalyticEcommerce title="Total Stock Dispatch" icon={<FileUploadIcon />} count={dataExport?.data?.length || 0} isLoss />
       </Grid>
 
       <Grid item md={8} sx={{ display: { sm: 'none', md: 'block', lg: 'none' } }} />

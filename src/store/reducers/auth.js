@@ -110,6 +110,23 @@ const actionResetPass = createAsyncThunk('auth/user/reset', async (data) => {
   }
 });
 
+const actionEditProfile = createAsyncThunk('auth/user/edit', async (data) => {
+  try {
+    const res = await AuthService.editUser(data);
+    if (res.status === 200) {
+      debugger;
+      toast.success('updated profile');
+      return res.data;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    const message = error.response.data?.mes || error.message;
+    toast.error('Link Change expired password!');
+    return error.response.data;
+  }
+});
+
 const { reducer } = createSlice({
   name: 'auth',
   initialState: {
@@ -134,6 +151,11 @@ const { reducer } = createSlice({
       error: ''
     },
     reset: {
+      loading: false,
+      data: null,
+      error: ''
+    },
+    edit: {
       loading: false,
       data: null,
       error: ''
@@ -206,10 +228,23 @@ const { reducer } = createSlice({
         state.reset.loading = false;
         state.reset.data = action.payload;
         state.reset.error = '';
+      })
+      .addCase(actionEditProfile.pending, (state) => {
+        state.edit.loading = true;
+      })
+      .addCase(actionEditProfile.rejected, (state, action) => {
+        state.edit.loading = false;
+        state.edit.error = action.payload;
+        state.edit.data = {};
+      })
+      .addCase(actionEditProfile.fulfilled, (state, action) => {
+        state.edit.loading = false;
+        state.edit.data = action.payload;
+        state.edit.error = '';
       });
   }
 });
 
 export default reducer;
 
-export { actionRegister, actionLogin, actionGetUser, actionForgotPass, actionResetPass };
+export { actionRegister, actionLogin, actionGetUser, actionForgotPass, actionResetPass, actionEditProfile };

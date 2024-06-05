@@ -1,6 +1,6 @@
 import { Paper } from '@mui/material';
 import { Avatar } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Grid } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import { TextField } from '@mui/material';
@@ -14,6 +14,8 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UploadImage from 'components/UploadImage';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import { actionEditProfile } from 'store/reducers/auth';
+import { useNavigate } from 'react-router-dom';
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
@@ -27,6 +29,9 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 const ProfilePage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { data: dataProfile } = useSelector((state) => state.auth.user);
   console.log(dataProfile);
   const {
@@ -41,9 +46,23 @@ const ProfilePage = () => {
       email: null,
       phone: null,
       company: null
-    },
-    resolver: yupResolver(SCHEMA_LOGIN)
+    }
+    // resolver: yupResolver(SCHEMA_LOGIN)
   });
+
+  const onSubmit = (data) => {
+    const Data = {
+      firstname: data?.firstname,
+      lastname: data?.lastname,
+      mobile: data?.mobile
+    };
+    console.log(data);
+    dispatch(actionEditProfile(Data)).then((res) => {
+      if (res?.payload?.success) {
+        navigate('/');
+      }
+    });
+  };
 
   useEffect(() => {
     setValue('firstname', dataProfile?.rs?.firstname);
@@ -74,64 +93,73 @@ const ProfilePage = () => {
           </Paper>
         </Grid> */}
         <Grid item xs={12}>
-          <Paper elevation={3}>
-            <div className="px-5 py-10">
-              <h1 className="text-xl font-bold mb-10">Edit Profile</h1>
-              <div className="grid grid-cols-2 gap-5">
-                <Controller
-                  name="firstname"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      error={Boolean(errors.firstname)}
-                      helperText={errors.firstname?.message || ''}
-                      label="First Name"
-                    />
-                  )}
-                />
-                <Controller
-                  name="lastname"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      error={Boolean(errors.lastname)}
-                      helperText={errors.lastname?.message || ''}
-                      label="Last Name"
-                    />
-                  )}
-                />
-                <Controller
-                  name="email"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField {...field} fullWidth error={Boolean(errors.email)} helperText={errors.email?.message || ''} label="Email" />
-                  )}
-                />
-                <Controller
-                  name="mobile"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      fullWidth
-                      error={Boolean(errors.mobile)}
-                      helperText={errors.mobile?.message || ''}
-                      label="Phone"
-                    />
-                  )}
-                />
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Paper elevation={3}>
+              <div className="px-5 py-10">
+                <h1 className="text-xl font-bold mb-10">Edit Profile</h1>
+                <div className="grid grid-cols-2 gap-5">
+                  <Controller
+                    name="firstname"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        fullWidth
+                        error={Boolean(errors.firstname)}
+                        helperText={errors.firstname?.message || ''}
+                        label="First Name"
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="lastname"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        fullWidth
+                        error={Boolean(errors.lastname)}
+                        helperText={errors.lastname?.message || ''}
+                        label="Last Name"
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="email"
+                    control={control}
+                    disabled={true}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        fullWidth
+                        error={Boolean(errors.email)}
+                        helperText={errors.email?.message || ''}
+                        label="Email"
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="mobile"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        fullWidth
+                        error={Boolean(errors.mobile)}
+                        helperText={errors.mobile?.message || ''}
+                        label="Phone"
+                      />
+                    )}
+                  />
+                </div>
+                <div className="w-full mt-5">
+                  <Button type="submit" variant="outlined" startIcon={<DriveFileRenameOutlineIcon />}>
+                    Update
+                  </Button>
+                </div>
               </div>
-              <div className="w-full mt-5">
-                <Button variant="outlined" startIcon={<DriveFileRenameOutlineIcon />}>
-                  Update
-                </Button>
-              </div>
-            </div>
-          </Paper>
+            </Paper>
+          </form>
         </Grid>
       </Grid>
     </div>
