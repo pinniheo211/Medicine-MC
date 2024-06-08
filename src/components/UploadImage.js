@@ -8,7 +8,6 @@ const getBase64 = (file) =>
     reader.readAsDataURL(file);
   });
 const UploadImage = ({ setFile, image }) => {
-  console.log(image);
   return (
     <>
       <Upload.Dragger
@@ -17,7 +16,6 @@ const UploadImage = ({ setFile, image }) => {
         action={'http://localhost:3000/'}
         showUploadList={{ showRemoveIcon: true }}
         accpet=".png,.jpeg"
-        fileList={image}
         beforeUpload={(file) => {
           setFile(file);
           return false;

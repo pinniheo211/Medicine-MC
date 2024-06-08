@@ -10,7 +10,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import DateFormat from 'utils/format';
+import DateFormat, { formatMoney } from 'utils/format';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
@@ -97,8 +97,8 @@ const Product = () => {
     dispatch(actionGetProduct());
     dispatch(actionGetCategory());
     dispatch(actionGetBrand());
-  }, []);
-  console.log(dataCategory?.productCategories);
+  }, [page]);
+  console.log(dataProduct?.productDatas?.length);
   return (
     <div className="container w-full ">
       <div className="w-full  flex flex-col gap-10 items-end">
@@ -127,7 +127,7 @@ const Product = () => {
                     return (
                       <>
                         <TableRow hover role="checkbox" tabIndex={-1}>
-                          <TableCell align="center">{index + 1}</TableCell>
+                          <TableCell align="center">{page * rowsPerPage + 1 * (index + 1)}</TableCell>
                           <TableCell>{row?.title}</TableCell>
                           <TableCell>
                             <p className="min-w-max break-words line-clamp-3"> {row?.brand?.title}</p>
@@ -144,10 +144,10 @@ const Product = () => {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <p className="min-w-max">{row?.price} đ</p>
+                            <p className="min-w-max">{formatMoney(row?.price)} đ</p>
                           </TableCell>
                           <TableCell>
-                            <p className="max-w-[100px]">{DateFormat(row?.createdAt)}</p>
+                            <p className="w-[200px]">{DateFormat(row?.createdAt)}</p>
                           </TableCell>
                           <TableCell align="center">
                             <div className="flex gap-3 items-center">
@@ -186,7 +186,7 @@ const Product = () => {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={dataProduct?.productDatas?.length}
+            count={dataProduct?.productDatas?.length || 0}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

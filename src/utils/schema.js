@@ -35,8 +35,7 @@ export const SCHEMA_NEW_PRODUCT = Yup.object().shape({
   title: Yup.string().required('Product name is required'),
   price: Yup.number().required('Price is required'),
   brand: Yup.object().required('Brand is required'),
-  category: Yup.object().required('Category is required'),
-  description: Yup.string().required('Description is required')
+  category: Yup.object().required('Category is required')
 });
 
 export const SCHEMA_NEWWAREHOUSE = Yup.object().shape({

@@ -1,4 +1,6 @@
 import Dialog from '@mui/material/Dialog';
+import Button from '@mui/material/Button';
+
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
@@ -16,19 +18,54 @@ import { useEffect, useState } from 'react';
 import { actionGetDetailProduct, actionGetProduct, actionUpdateProduct } from 'store/reducers/product';
 import CustomAutocomplete from 'components/Mui/CustomAutoComplete';
 import { DeleteOutlined } from '@ant-design/icons';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { styled } from '@mui/material/styles';
+
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1
+});
 
 export default function DialogUpdateForm({ open, setOpen, id }) {
   const dispatch = useDispatch();
   const [file, setFile] = useState([]);
   const [image, setImage] = useState([]);
-
+  const [filePreviews, setFilePreviews] = useState([]);
+  const [files, setFiles] = useState([]);
+  const handleFileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    const previews = selectedFiles.map((file) => URL.createObjectURL(file));
+    setFilePreviews(previews);
+    setFiles(selectedFiles);
+    setValue('images', selectedFiles); // Setting files in react-hook-form
+  };
+  const handleDeleteImage = (index) => {
+    const newPreviews = [...filePreviews];
+    const newFiles = [...files];
+    newPreviews.splice(index, 1);
+    newFiles.splice(index, 1);
+    setFilePreviews(newPreviews);
+    setFiles(newFiles);
+    setValue('images', newFiles); // Update react-hook-form value
+  };
   const { data: dataDetailProduct } = useSelector((state) => state.product.detailProduct);
   const { data: dataCategory } = useSelector((state) => state.category.getCategory);
   const { data: dataBrand } = useSelector((state) => state.brand.getBrand);
   const handleClose = () => {
     setOpen(false);
   };
-  console.log(dataDetailProduct);
+
+  const handleRemove = (index) => {
+    setImage((prevImages) => prevImages.filter((_, i) => i !== index));
+  };
+  console.log(image);
 
   const {
     control,
@@ -53,18 +90,15 @@ export default function DialogUpdateForm({ open, setOpen, id }) {
     const dataNew = new FormData();
     dataNew.append('title', data?.title);
     dataNew.append('price', data?.price);
-    dataNew.append('brand', data?.brand);
+    dataNew.append('brand', data?.brand?._id);
     dataNew.append('description', data?.description);
     dataNew.append('slug', data?.slug);
+    files.forEach((file) => dataNew.append('images', file));
     const dataForm = {
       id: id,
-      body: {
-        title: data?.title,
-        price: data?.price,
-        brand: data?.brand,
-        description: data?.description
-      }
+      body: dataNew
     };
+    debugger;
     dispatch(actionUpdateProduct(dataForm)).then((res) => {
       setOpen(false);
       if (res?.payload?.success) {
@@ -82,6 +116,7 @@ export default function DialogUpdateForm({ open, setOpen, id }) {
       setValue('price', dataDetailProduct?.productData?.price);
       setValue('slug', dataDetailProduct?.productData?.slug);
       setImage(dataDetailProduct?.productData?.images);
+      setFilePreviews(dataDetailProduct?.productData?.images);
     }
   }, []);
 
@@ -211,17 +246,36 @@ export default function DialogUpdateForm({ open, setOpen, id }) {
                   />
                 )}
               />
-              {dataDetailProduct?.productData?.images?.map((img, index) => {
-                return (
-                  <div className="w-full flex flex-col gap-3">
-                    <div className="rounded-lg shadow border p-3 flex justify-between items-center">
-                      <img src={img} alt="image" className="w-[50px]" />
-                      <DeleteOutlined />
+
+              <div className="flex flex-col gap-2 mt-8">
+                <label className="font-semibold" htmlFor="products">
+                  Upload Image of product
+                </label>
+                {/* <input
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  id="products"
+                  className="px-10 py-1 rounded-lg bg-blue-500 text-white"
+                  multiple
+                  onChange={handleFileChange}
+                /> */}
+                <Button component="label" role={undefined} variant="contained" tabIndex={-1} startIcon={<CloudUploadIcon />}>
+                  Upload file
+                  <VisuallyHiddenInput type="file" accept="image/png, image/jpeg" multiple onChange={handleFileChange} />
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-4">
+                {filePreviews.map((src, index) => (
+                  <div className="relative group">
+                    <img key={index} src={src} alt={`Preview ${index}`} className="w-24 h-24 object-cover rounded-lg shadow" />
+                    <div className="absolute top-0 right-0  ">
+                      <span className="text-rose-500 cursor-pointer" onClick={() => handleDeleteImage(index)}>
+                        <CloseIcon />
+                      </span>
                     </div>
                   </div>
-                );
-              })}
-              {/* <UploadImage setFile={setFile} file={file} image={image} /> */}
+                ))}
+              </div>
             </div>
             <div className="text-right mt-10">
               <button className="min-w-[100px] disabled:cursor-not-allowed disabled:bg-slate-600 rounded-lg bg-primary-8 py-1.5 text-white">

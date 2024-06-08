@@ -4,7 +4,6 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
 import { TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
@@ -15,13 +14,40 @@ import { useSelector } from 'react-redux';
 import { CurrencyNumericFormat } from 'components/Mui/NumericFormat';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SCHEMA_NEW_PRODUCT } from 'utils/schema';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import LoaderStyleOne from 'components/LoadingComponent';
 import CustomAutocomplete from 'components/Mui/CustomAutoComplete';
+import e from 'cors';
+import Ckeditor from 'components/ckeditor';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import CloseIcon from '@mui/icons-material/Close';
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1
+});
 
 export default function DialogProduct({ open, setOpen, userId }) {
   const dispatch = useDispatch();
-  const [file, setFile] = useState();
+  const [payload, setPayload] = useState({
+    description: ''
+  });
+  const [filePreviews, setFilePreviews] = useState([]);
+  const [files, setFiles] = useState([]);
+  const handleFileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    const previews = selectedFiles.map((file) => URL.createObjectURL(file));
+    setFilePreviews(previews);
+    setFiles(selectedFiles);
+    setValue('images', selectedFiles); // Setting files in react-hook-form
+  };
+  console.log(files);
   const { data: dataCategory } = useSelector((state) => state.category.getCategory);
   const { data: dataBrand } = useSelector((state) => state.brand.getBrand);
   const handleClose = () => {
@@ -31,6 +57,8 @@ export default function DialogProduct({ open, setOpen, userId }) {
   const {
     control,
     handleSubmit,
+    register,
+    setValue,
     formState: { errors }
   } = useForm({
     mode: 'onChange',
@@ -45,6 +73,17 @@ export default function DialogProduct({ open, setOpen, userId }) {
     },
     resolver: yupResolver(SCHEMA_NEW_PRODUCT)
   });
+  console.log(payload);
+
+  const handleDeleteImage = (index) => {
+    const newPreviews = [...filePreviews];
+    const newFiles = [...files];
+    newPreviews.splice(index, 1);
+    newFiles.splice(index, 1);
+    setFilePreviews(newPreviews);
+    setFiles(newFiles);
+    setValue('images', newFiles); // Update react-hook-form value
+  };
   const handleNew = (data) => {
     const dataNew = new FormData();
     dataNew.append('title', data?.title);
@@ -52,11 +91,10 @@ export default function DialogProduct({ open, setOpen, userId }) {
     dataNew.append('brand', data?.brand?._id);
     dataNew.append('category', data?.category?._id);
     dataNew.append('description', data?.description);
-    dataNew.append('images', file);
-
+    files.forEach((file) => dataNew.append('images', file));
     dispatch(actionAddNewProduct(dataNew)).then((res) => {
       if (res?.payload?.success) {
-        dispatch(actionGetProduct()).then((res) => {
+        dispatch(actionGetProduct({ page: 1, limit: 10 })).then((res) => {
           if (res?.payload?.success) {
             setOpen(false);
           }
@@ -65,6 +103,7 @@ export default function DialogProduct({ open, setOpen, userId }) {
     });
   };
   console.log(dataBrand?.brands);
+
   return (
     <>
       <Dialog
@@ -189,7 +228,37 @@ export default function DialogProduct({ open, setOpen, userId }) {
                   />
                 )}
               />
-              <UploadImage setFile={setFile} />
+
+              <div className="flex flex-col gap-2 mt-8">
+                <label className="font-semibold" htmlFor="products">
+                  Upload Image of product
+                </label>
+                {/* <input
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  id="products"
+                  className="px-10 py-1 rounded-lg bg-blue-500 text-white"
+                  multiple
+                  onChange={handleFileChange}
+                /> */}
+                <Button component="label" role={undefined} variant="contained" tabIndex={-1} startIcon={<CloudUploadIcon />}>
+                  Upload file
+                  <VisuallyHiddenInput type="file" accept="image/png, image/jpeg" multiple onChange={handleFileChange} />
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-2 mt-4">
+                {filePreviews.map((src, index) => (
+                  <div className="relative group">
+                    <img key={index} src={src} alt={`Preview ${index}`} className="w-24 h-24 object-cover rounded-lg shadow" />
+                    <div className="absolute top-0 right-0  ">
+                      <span className="text-rose-500 cursor-pointer" onClick={() => handleDeleteImage(index)}>
+                        <CloseIcon />
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* <UploadImage setFile={setFile} /> */}
             </div>
             <div className="text-right mt-10">
               <button className="min-w-[100px] disabled:cursor-not-allowed disabled:bg-slate-600 rounded-lg bg-primary-8 py-1.5 text-white">
