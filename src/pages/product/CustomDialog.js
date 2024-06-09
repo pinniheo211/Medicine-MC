@@ -7,18 +7,14 @@ import IconButton from '@mui/material/IconButton';
 import { TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
-import UploadImage from 'components/UploadImage';
 import { useDispatch } from 'react-redux';
 import { actionAddNewProduct, actionGetProduct } from 'store/reducers/product';
 import { useSelector } from 'react-redux';
 import { CurrencyNumericFormat } from 'components/Mui/NumericFormat';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SCHEMA_NEW_PRODUCT } from 'utils/schema';
-import { useCallback, useEffect, useState } from 'react';
-import LoaderStyleOne from 'components/LoadingComponent';
+import { useState } from 'react';
 import CustomAutocomplete from 'components/Mui/CustomAutoComplete';
-import e from 'cors';
-import Ckeditor from 'components/ckeditor';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import CloseIcon from '@mui/icons-material/Close';
 const VisuallyHiddenInput = styled('input')({
@@ -47,7 +43,6 @@ export default function DialogProduct({ open, setOpen, userId }) {
     setFiles(selectedFiles);
     setValue('images', selectedFiles); // Setting files in react-hook-form
   };
-  console.log(files);
   const { data: dataCategory } = useSelector((state) => state.category.getCategory);
   const { data: dataBrand } = useSelector((state) => state.brand.getBrand);
   const handleClose = () => {

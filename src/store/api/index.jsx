@@ -57,7 +57,9 @@ export const warehouseService = {
   getImportProduct: () => API.get('/api/import-records'),
   getExportProduct: () => API.get('/api/export-records/'),
   getDescriptionExport: (id) => API.get(`api/export-records/${id}`),
-  getDescriptionImport: (id) => API.get(`api/import-records/${id}`)
+  getDescriptionImport: (id) => API.get(`api/import-records/${id}`),
+  getInventory: (data) =>
+    API.get(`api/warehouse/inventory/end-of-month?warehouseId=${data.warehouseId}&month=${data.month}&year=${data.year}`)
 };
 
 export const CategoryService = {

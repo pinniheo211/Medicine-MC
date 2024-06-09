@@ -38,6 +38,12 @@ export const SCHEMA_NEW_PRODUCT = Yup.object().shape({
   category: Yup.object().required('Category is required')
 });
 
+export const SHCEMA_INVENTORY = Yup.object().shape({
+  warehouseId: Yup.object().required('Warehouse is required'),
+  month: Yup.string().required('Month is required'),
+  year: Yup.string().required('Year is required')
+});
+
 export const SCHEMA_NEWWAREHOUSE = Yup.object().shape({
   name: Yup.string().required('Warehouse name is required'),
   phone: Yup.string().required('required').matches(phoneRegExp, 'Phone number is not valid').min(10, 'too short').max(10, 'too long'),

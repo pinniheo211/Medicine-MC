@@ -149,6 +149,22 @@ const actionGetDesImport = createAsyncThunk('warehouse/get-des-import-product', 
   }
 });
 
+const actionGetInventory = createAsyncThunk('warehouse/get-Inventory-warehouse', async (data) => {
+  try {
+    const res = await warehouseService.getInventory(data);
+    if (res.status === 200) {
+      toast.success('Get inventory successfully');
+      return res.data;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    const message = error.response.data?.message || error.message;
+    toast.error(message);
+    return error.response.data;
+  }
+});
+
 const actionDeleteWarehouse = createAsyncThunk('warehouse/deleteWarehouse', async (id) => {
   try {
     const res = await warehouseService.deleteWarehouse(id);
@@ -222,6 +238,11 @@ const { reducer } = createSlice({
       error: ''
     },
     getDesImportProducts: {
+      loading: false,
+      data: null,
+      error: ''
+    },
+    getInventory: {
       loading: false,
       data: null,
       error: ''
@@ -372,6 +393,19 @@ const { reducer } = createSlice({
         state.getDesImportProducts.loading = false;
         state.getDesImportProducts.data = action.payload;
         state.getDesImportProducts.error = '';
+      })
+      .addCase(actionGetInventory.pending, (state) => {
+        state.getInventory.loading = true;
+      })
+      .addCase(actionGetInventory.rejected, (state, action) => {
+        state.getInventory.loading = false;
+        state.getInventory.error = action.payload;
+        state.getInventory.data = {};
+      })
+      .addCase(actionGetInventory.fulfilled, (state, action) => {
+        state.getInventory.loading = false;
+        state.getInventory.data = action.payload;
+        state.getInventory.error = '';
       });
   }
 });
@@ -389,5 +423,6 @@ export {
   actionGetImport,
   actionGetExport,
   actionGetDesExport,
-  actionGetDesImport
+  actionGetDesImport,
+  actionGetInventory
 };

@@ -1,14 +1,23 @@
 // assets
-import { DashboardOutlined, UserOutlined, HomeOutlined, ShoppingCartOutlined, ImportOutlined, ExportOutlined } from '@ant-design/icons';
-
+import {
+  DashboardOutlined,
+  UserOutlined,
+  HomeOutlined,
+  ShoppingCartOutlined,
+  ImportOutlined,
+  ExportOutlined,
+  InventoryIcon
+} from '@ant-design/icons';
 // icons
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 const icons = {
   DashboardOutlined,
   UserOutlined,
   HomeOutlined,
   ShoppingCartOutlined,
   ImportOutlined,
-  ExportOutlined
+  ExportOutlined,
+  Inventory2OutlinedIcon
 };
 
 // ==============================|| MENU ITEMS - DASHBOARD ||============================== //
@@ -65,6 +74,14 @@ const dashboard = {
       type: 'item',
       url: '/dashboard/warehouse-export',
       icon: icons.ExportOutlined,
+      breadcrumbs: true
+    },
+    {
+      id: 'inventory',
+      title: 'Inventory',
+      type: 'item',
+      url: '/dashboard/inventory',
+      icon: icons.Inventory2OutlinedIcon,
       breadcrumbs: true
     }
   ]
