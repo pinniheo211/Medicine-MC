@@ -128,7 +128,9 @@ const Product = () => {
                       <>
                         <TableRow hover role="checkbox" tabIndex={-1}>
                           <TableCell align="center">{page * rowsPerPage + 1 * (index + 1)}</TableCell>
-                          <TableCell>{row?.title}</TableCell>
+                          <TableCell>
+                            <p className="max-w-[250px] break-words line-clamp-3">{row?.title}</p>
+                          </TableCell>
                           <TableCell>
                             <p className="min-w-max break-words line-clamp-3"> {row?.brand?.title}</p>
                           </TableCell>
