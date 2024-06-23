@@ -98,7 +98,6 @@ export default function DialogUpdateForm({ open, setOpen, id }) {
       id: id,
       body: dataNew
     };
-    debugger;
     dispatch(actionUpdateProduct(dataForm)).then((res) => {
       setOpen(false);
       if (res?.payload?.success) {

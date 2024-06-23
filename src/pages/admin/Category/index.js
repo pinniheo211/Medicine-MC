@@ -1,15 +1,13 @@
-import { Paper, Table, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@mui/material';
-import { Button, TableBody } from '../../../node_modules/@mui/material/index';
-import DialogExport from './CustomDialogExport';
+import { Paper, Table, TableCell, TableContainer, TableHead, TableRow, TableBody } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { actionGetProduct } from 'store/reducers/product';
-import { actionGetDesExport, actionGetExport, actionGetWarehouse } from 'store/reducers/warehouse';
+import { actionDeleteCategory, actionGetCategory, actionGetDesCategory } from 'store/reducers/category';
 import DateFormat from 'utils/format';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import DescriptionExport from './DescriptionExport';
+import DialogCreateCateogy from './DialogCreateCategory';
+import DialogFormUpdate from './DialogFormUpdate';
 export const columns = [
   {
     id: 1,
@@ -17,36 +15,25 @@ export const columns = [
   },
   {
     id: 2,
-    label: 'Warehouse'
+    label: 'Category name'
   },
   {
     id: 3,
-    label: 'Address'
+    label: 'Created At'
   },
   {
     id: 3,
-    label: 'Export To'
-  },
-  {
-    id: 4,
-    label: 'Total Products'
-  },
-  {
-    id: 5,
-    label: 'Create At'
-  },
-  {
-    id: 6,
     label: 'Action'
   }
 ];
-const WarehouseExport = () => {
-  const [openDialog, setOpenDialog] = useState(false);
-  const { data: dataExportProduct } = useSelector((state) => state.warehouse.getExportProduct);
-  const [open, setOpen] = useState(false);
-  const [id, setId] = useState();
+const Category = () => {
+  const { data: dataCategory } = useSelector((state) => state.category.getCategory);
+  const [openCategory, setOpenCategory] = useState(false);
+  const [openUpdateCategory, setOpenUpdateCategory] = useState(false);
   const dispatch = useDispatch();
   const [page, setPage] = useState(0);
+  const [id, setId] = useState();
+
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
@@ -55,22 +42,31 @@ const WarehouseExport = () => {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
+  const handleDelete = (id) => {
+    dispatch(actionDeleteCategory(id)).then((res) => {
+      if (res?.payload?.success) {
+        setId(id);
+        dispatch(actionGetCategory());
+      }
+    });
+  };
 
-  const handleDescription = (id) => {
-    setId(id);
-    setOpen(true);
-    dispatch(actionGetDesExport(id));
+  const handleUpdate = (id) => {
+    dispatch(actionGetDesCategory(id)).then((res) => {
+      if (res?.payload?.success) {
+        setOpenUpdateCategory(true);
+        setId(id);
+      }
+    });
   };
   useEffect(() => {
-    dispatch(actionGetWarehouse());
-    dispatch(actionGetProduct());
-    dispatch(actionGetExport());
+    dispatch(actionGetCategory());
   }, []);
 
   return (
     <div className="flex container flex-col gap-10 items-start">
-      <button onClick={() => setOpenDialog(true)} className="mr-10 px-5 py-1.5 text-white font-semibold rounded-lg bg-primary-8">
-        Create Warehouse Export
+      <button onClick={() => setOpenCategory(true)} className="mr-10 px-5 py-1.5 text-white font-semibold rounded-lg bg-primary-8">
+        Create Category
       </button>
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 440 }}>
@@ -84,34 +80,31 @@ const WarehouseExport = () => {
                 ))}
               </TableRow>
             </TableHead>
-            {openDialog && <DialogExport open={openDialog} setOpen={setOpenDialog} />}
+            {openCategory && <DialogCreateCateogy open={openCategory} setOpen={setOpenCategory} />}
             <TableBody>
-              {dataExportProduct?.data?.length > 0 ? (
-                dataExportProduct?.data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+              {dataCategory?.productCategories?.length > 0 ? (
+                dataCategory?.productCategories.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
                   return (
                     <>
                       <TableRow hover role="checkbox" tabIndex={-1}>
                         <TableCell align="center">{index + 1}</TableCell>
                         <TableCell align="center">
-                          <p className='className="max-w-[200px] min-w-max'>{row?.warehouse?.name}</p>
+                          <p className='className="max-w-[200px] min-w-max'>{row?.title}</p>
                         </TableCell>
-                        <TableCell align="center">{row?.warehouse?.address}</TableCell>
-                        <TableCell align="center">{row?.address}</TableCell>
+                        <TableCell align="center">{DateFormat(row?.createdAt)}</TableCell>
+
                         <TableCell align="center">
-                          <p className="min-w-[150px]">{row?.products?.length}</p>
-                        </TableCell>
-                        <TableCell align="center">
-                          <p className="min-w-[200px]">{DateFormat(row?.createdAt)}</p>
-                        </TableCell>
-                        <TableCell align="center">
-                          <div className="flex w-full justify-center gap-3 items-center">
-                            <span className="text-primary-8" onClick={() => handleDescription(row?._id)}>
-                              <RemoveRedEyeIcon />
-                            </span>
+                          <div className="flex gap-3 items-center justify-center">
+                            <Button onClick={() => handleDelete(row?._id)} color="error" variant="outlined" startIcon={<DeleteIcon />}>
+                              Delete
+                            </Button>
+                            <Button onClick={() => handleUpdate(row?._id)} variant="outlined" startIcon={<EditIcon />}>
+                              edit
+                            </Button>
                           </div>
                         </TableCell>
                       </TableRow>
-                      {open && <DescriptionExport open={open} setOpen={setOpen} id={id} />}
+                      {openUpdateCategory && <DialogFormUpdate open={openUpdateCategory} setOpen={setOpenUpdateCategory} id={id} />}
                     </>
                   );
                 })
@@ -134,7 +127,7 @@ const WarehouseExport = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
+        {/* <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
           count={dataExportProduct?.data?.length || 0}
@@ -142,10 +135,9 @@ const WarehouseExport = () => {
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+        /> */}
       </Paper>
     </div>
   );
 };
-
-export default WarehouseExport;
+export default Category;

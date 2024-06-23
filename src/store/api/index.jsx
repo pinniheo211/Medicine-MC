@@ -35,7 +35,8 @@ export const AuthService = {
   getUser: () => API.get('api/user/current'),
   forgotPass: (email) => API.get(`api/user/forgotpassword?email=${email}`),
   resetPass: (data) => API.put(`api/user/resetpassword`, data),
-  editUser: (data) => API.put('api/user/current', data)
+  editUser: (data) => API.put('api/user/current', data),
+  getAllUser: () => API.get('api/user/')
 };
 
 export const productService = {
@@ -63,7 +64,11 @@ export const warehouseService = {
 };
 
 export const CategoryService = {
-  getAllCategory: () => API.get(`api/productcategory`)
+  getAllCategory: () => API.get(`api/productcategory`),
+  createCategory: (data) => API.post('api/productcategory', data),
+  deleteCategory: (id) => API.delete(`api/productcategory/${id}`),
+  getDesCategory: (id) => API.get(`api/productcategory/${id}`),
+  updateCategory: (data) => API.put(`api/productcategory/${data.id}`, data.body)
 };
 
 export const BrandService = {

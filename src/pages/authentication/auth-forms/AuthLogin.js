@@ -59,7 +59,11 @@ const AuthLogin = () => {
     dispatch(actionLogin(loginData)).then((res) => {
       if (res?.payload?.sucess) {
         localStorage.setItem('access_token', res?.payload?.accessToken);
-        navigate('/dashboard/default');
+        if (res?.payload?.userData?.email === 'admin@gmail.com') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard/default');
+        }
       }
     });
   };

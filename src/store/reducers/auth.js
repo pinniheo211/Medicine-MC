@@ -127,6 +127,21 @@ const actionEditProfile = createAsyncThunk('auth/user/edit', async (data) => {
   }
 });
 
+const actionGetAllUser = createAsyncThunk('auth/get/user', async () => {
+  try {
+    const res = await AuthService.getAllUser();
+    if (res.status === 200) {
+      return res.data;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    const message = error.response.data?.mes || error.message;
+    toast.error('Link Change expired password!');
+    return error.response.data;
+  }
+});
+
 const { reducer } = createSlice({
   name: 'auth',
   initialState: {
@@ -156,6 +171,11 @@ const { reducer } = createSlice({
       error: ''
     },
     edit: {
+      loading: false,
+      data: null,
+      error: ''
+    },
+    getAllUser: {
       loading: false,
       data: null,
       error: ''
@@ -241,10 +261,23 @@ const { reducer } = createSlice({
         state.edit.loading = false;
         state.edit.data = action.payload;
         state.edit.error = '';
+      })
+      .addCase(actionGetAllUser.pending, (state) => {
+        state.getAllUser.loading = true;
+      })
+      .addCase(actionGetAllUser.rejected, (state, action) => {
+        state.getAllUser.loading = false;
+        state.getAllUser.error = action.payload;
+        state.getAllUser.data = {};
+      })
+      .addCase(actionGetAllUser.fulfilled, (state, action) => {
+        state.getAllUser.loading = false;
+        state.getAllUser.data = action.payload;
+        state.getAllUser.error = '';
       });
   }
 });
 
 export default reducer;
 
-export { actionRegister, actionLogin, actionGetUser, actionForgotPass, actionResetPass, actionEditProfile };
+export { actionRegister, actionLogin, actionGetUser, actionForgotPass, actionResetPass, actionEditProfile, actionGetAllUser };
