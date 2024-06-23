@@ -50,15 +50,15 @@ const dashboardAdmin = {
       url: '/admin/category',
       icon: icons.ShoppingCartOutlined,
       breadcrumbs: true
+    },
+    {
+      id: 'brand',
+      title: 'Brand',
+      type: 'item',
+      url: '/admin/brand',
+      icon: icons.HomeOutlined,
+      breadcrumbs: true
     }
-    // {
-    //   id: 'warehouse',
-    //   title: 'Warehouse',
-    //   type: 'item',
-    //   url: '/dashboard/ware-house',
-    //   icon: icons.HomeOutlined,
-    //   breadcrumbs: true
-    // },
     // {
     //   id: 'warehouse-receipt',
     //   title: 'Warehouse Receipt',

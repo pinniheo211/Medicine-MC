@@ -72,5 +72,9 @@ export const CategoryService = {
 };
 
 export const BrandService = {
-  getAllBrand: () => API.get('api/brand')
+  getAllBrand: () => API.get('api/brand'),
+  deleteBrand: (id) => API.delete(`api/brand/delete/${id}`),
+  createBrand: (data) => API.post('api/brand', data),
+  getDesBrand: (id) => API.get(`api/brand/${id}`),
+  updateBrand: (data) => API.put(`api/brand/${data.id}`, data.body)
 };

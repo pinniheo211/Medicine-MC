@@ -59,3 +59,7 @@ export const SCHEMA_IMPORTPRODUCT = Yup.object().shape({
 export const SCHEMA_CATEGORY = Yup.object().shape({
   title: Yup.string().required('Category name is required')
 });
+
+export const SCHEMA_BRAND = Yup.object().shape({
+  title: Yup.string().required('Brand name is required')
+});

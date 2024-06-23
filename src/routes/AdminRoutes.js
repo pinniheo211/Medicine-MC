@@ -16,6 +16,7 @@ const SamplePage = Loadable(lazy(() => import('pages/extra-pages/SamplePage')));
 const Typography = Loadable(lazy(() => import('pages/components-overview/Typography')));
 const Profile = Loadable(lazy(() => import('pages/profile')));
 const Category = Loadable(lazy(() => import('pages/admin/Category')));
+const Brand = Loadable(lazy(() => import('pages/admin/Brand')));
 const Product = Loadable(lazy(() => import('pages/product')));
 const Warehouse = Loadable(lazy(() => import('pages/warehouse')));
 const WarehouseReceipt = Loadable(lazy(() => import('pages/warehouse-receipt')));
@@ -40,6 +41,10 @@ const AdminRoutes = {
     {
       path: '/admin/category',
       element: <Category />
+    },
+    {
+      path: '/admin/brand',
+      element: <Brand />
     }
   ]
 };
