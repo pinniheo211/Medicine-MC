@@ -58,15 +58,15 @@ const dashboardAdmin = {
       url: '/admin/brand',
       icon: icons.HomeOutlined,
       breadcrumbs: true
+    },
+    {
+      id: 'user',
+      title: 'User',
+      type: 'item',
+      url: '/admin/user',
+      icon: icons.ImportOutlined,
+      breadcrumbs: true
     }
-    // {
-    //   id: 'warehouse-receipt',
-    //   title: 'Warehouse Receipt',
-    //   type: 'item',
-    //   url: '/dashboard/warehouse-recipes',
-    //   icon: icons.ImportOutlined,
-    //   breadcrumbs: true
-    // },
     // {
     //   id: 'warehouse-export',
     //   title: 'Warehouse Export',

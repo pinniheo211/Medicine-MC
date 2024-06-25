@@ -17,6 +17,7 @@ const Typography = Loadable(lazy(() => import('pages/components-overview/Typogra
 const Profile = Loadable(lazy(() => import('pages/profile')));
 const Category = Loadable(lazy(() => import('pages/admin/Category')));
 const Brand = Loadable(lazy(() => import('pages/admin/Brand')));
+const User = Loadable(lazy(() => import('pages/admin/User')));
 const Product = Loadable(lazy(() => import('pages/product')));
 const Warehouse = Loadable(lazy(() => import('pages/warehouse')));
 const WarehouseReceipt = Loadable(lazy(() => import('pages/warehouse-receipt')));
@@ -45,6 +46,10 @@ const AdminRoutes = {
     {
       path: '/admin/brand',
       element: <Brand />
+    },
+    {
+      path: '/admin/user',
+      element: <User />
     }
   ]
 };

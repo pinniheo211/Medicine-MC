@@ -141,6 +141,66 @@ const actionGetAllUser = createAsyncThunk('auth/get/user', async () => {
     return error.response.data;
   }
 });
+const actionGetUserId = createAsyncThunk('auth/get/user-id', async (id) => {
+  try {
+    const res = await AuthService.getUserById(id);
+    if (res.status === 200) {
+      return res.data;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    const message = error.response.data?.mes || error.message;
+    toast.error('Link Change expired password!');
+    return error.response.data;
+  }
+});
+const actionEditUser = createAsyncThunk('auth/edit/user-id', async (data) => {
+  try {
+    const res = await AuthService.editUserById(data);
+    if (res.status === 200) {
+      toast.success('Updated User ');
+      return res.data;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    const message = error.response.data?.mes || error.message;
+    toast.error('Link Change expired password!');
+    return error.response.data;
+  }
+});
+
+const actionBlockUser = createAsyncThunk('auth/block/user-id', async (id) => {
+  try {
+    const res = await AuthService.blockUser(id);
+    if (res.status === 200) {
+      toast.success('Updated User ');
+      return res.data;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    const message = error.response.data?.mes || error.message;
+    toast.error('Link Change expired password!');
+    return error.response.data;
+  }
+});
+const actionUnblockUser = createAsyncThunk('auth/unblock/user-id', async (id) => {
+  try {
+    const res = await AuthService.unblockUser(id);
+    if (res.status === 200) {
+      toast.success('Unblocked User ');
+      return res.data;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    const message = error.response.data?.mes || error.message;
+    toast.error('Link Change expired password!');
+    return error.response.data;
+  }
+});
 
 const { reducer } = createSlice({
   name: 'auth',
@@ -176,6 +236,26 @@ const { reducer } = createSlice({
       error: ''
     },
     getAllUser: {
+      loading: false,
+      data: null,
+      error: ''
+    },
+    getUserId: {
+      loading: false,
+      data: null,
+      error: ''
+    },
+    editUser: {
+      loading: false,
+      data: null,
+      error: ''
+    },
+    blockUser: {
+      loading: false,
+      data: null,
+      error: ''
+    },
+    unBlockUser: {
       loading: false,
       data: null,
       error: ''
@@ -274,10 +354,74 @@ const { reducer } = createSlice({
         state.getAllUser.loading = false;
         state.getAllUser.data = action.payload;
         state.getAllUser.error = '';
+      })
+      .addCase(actionGetUserId.pending, (state) => {
+        state.getUserId.loading = true;
+      })
+      .addCase(actionGetUserId.rejected, (state, action) => {
+        state.getUserId.loading = false;
+        state.getUserId.error = action.payload;
+        state.getUserId.data = {};
+      })
+      .addCase(actionGetUserId.fulfilled, (state, action) => {
+        state.getUserId.loading = false;
+        state.getUserId.data = action.payload;
+        state.getUserId.error = '';
+      })
+      .addCase(actionEditUser.pending, (state) => {
+        state.editUser.loading = true;
+      })
+      .addCase(actionEditUser.rejected, (state, action) => {
+        state.editUser.loading = false;
+        state.editUser.error = action.payload;
+        state.editUser.data = {};
+      })
+      .addCase(actionEditUser.fulfilled, (state, action) => {
+        state.editUser.loading = false;
+        state.editUser.data = action.payload;
+        state.editUser.error = '';
+      })
+      .addCase(actionBlockUser.pending, (state) => {
+        state.blockUser.loading = true;
+      })
+      .addCase(actionBlockUser.rejected, (state, action) => {
+        state.blockUser.loading = false;
+        state.blockUser.error = action.payload;
+        state.blockUser.data = {};
+      })
+      .addCase(actionBlockUser.fulfilled, (state, action) => {
+        state.blockUser.loading = false;
+        state.blockUser.data = action.payload;
+        state.blockUser.error = '';
+      })
+      .addCase(actionUnblockUser.pending, (state) => {
+        state.unBlockUser.loading = true;
+      })
+      .addCase(actionUnblockUser.rejected, (state, action) => {
+        state.unBlockUser.loading = false;
+        state.unBlockUser.error = action.payload;
+        state.unBlockUser.data = {};
+      })
+      .addCase(actionUnblockUser.fulfilled, (state, action) => {
+        state.unBlockUser.loading = false;
+        state.unBlockUser.data = action.payload;
+        state.unBlockUser.error = '';
       });
   }
 });
 
 export default reducer;
 
-export { actionRegister, actionLogin, actionGetUser, actionForgotPass, actionResetPass, actionEditProfile, actionGetAllUser };
+export {
+  actionRegister,
+  actionLogin,
+  actionGetUser,
+  actionForgotPass,
+  actionResetPass,
+  actionEditProfile,
+  actionGetAllUser,
+  actionGetUserId,
+  actionEditUser,
+  actionBlockUser,
+  actionUnblockUser
+};

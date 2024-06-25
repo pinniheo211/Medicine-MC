@@ -36,7 +36,11 @@ export const AuthService = {
   forgotPass: (email) => API.get(`api/user/forgotpassword?email=${email}`),
   resetPass: (data) => API.put(`api/user/resetpassword`, data),
   editUser: (data) => API.put('api/user/current', data),
-  getAllUser: () => API.get('api/user/')
+  getAllUser: () => API.get('api/user/'),
+  getUserById: (id) => API.get(`api/user/${id}`),
+  editUserById: (data) => API.put(`api/user/${data?.id}`, data?.body),
+  blockUser: (id) => API.put(`api/user/block/${id}`),
+  unblockUser: (id) => API.put(`api/user/unblock/${id}`)
 };
 
 export const productService = {
