@@ -63,6 +63,36 @@ const actionUpdateProduct = createAsyncThunk('product/updateProduct', async (dat
     return message;
   }
 });
+const actionGetProductById = createAsyncThunk('product/getProduct-byuser', async (id) => {
+  try {
+    const res = await productService.getProductByUserId(id);
+    if (res.status === 200) {
+      return res.data;
+    } else {
+      toast.error(res.data.mes);
+      return res.data;
+    }
+  } catch (error) {
+    const message = error.response.data?.message || error.message;
+    return message;
+  }
+});
+
+const actionDeleteProductByAdmin = createAsyncThunk('product/deleteproduct-byadmin', async (data) => {
+  try {
+    const res = await productService.deleteProductByAdmin(data);
+    if (res.status === 200) {
+      toast.success('Product deleted successfully');
+      return res.data;
+    } else {
+      toast.error(res.data.mes);
+      return res.data;
+    }
+  } catch (error) {
+    const message = error.response.data?.message || error.message;
+    return message;
+  }
+});
 
 const actionDeleteProduct = createAsyncThunk('product/deleteProduct', async (id) => {
   try {
@@ -107,6 +137,16 @@ const { reducer } = createSlice({
       error: ''
     },
     detailProduct: {
+      loading: false,
+      data: null,
+      error: ''
+    },
+    getProductByUser: {
+      loading: false,
+      data: null,
+      error: ''
+    },
+    deleteProductByAdmin: {
       loading: false,
       data: null,
       error: ''
@@ -183,10 +223,44 @@ const { reducer } = createSlice({
         state.detailProduct.loading = false;
         state.detailProduct.data = action.payload;
         state.detailProduct.error = '';
+      })
+      .addCase(actionGetProductById.pending, (state) => {
+        state.getProductByUser.loading = true;
+      })
+      .addCase(actionGetProductById.rejected, (state, action) => {
+        state.getProductByUser.loading = false;
+        state.getProductByUser.error = action.payload;
+        state.getProductByUser.data = {};
+      })
+      .addCase(actionGetProductById.fulfilled, (state, action) => {
+        state.getProductByUser.loading = false;
+        state.getProductByUser.data = action.payload;
+        state.getProductByUser.error = '';
+      })
+      .addCase(actionDeleteProductByAdmin.pending, (state) => {
+        state.deleteProductByAdmin.loading = true;
+      })
+      .addCase(actionDeleteProductByAdmin.rejected, (state, action) => {
+        state.deleteProductByAdmin.loading = false;
+        state.deleteProductByAdmin.error = action.payload;
+        state.deleteProductByAdmin.data = {};
+      })
+      .addCase(actionDeleteProductByAdmin.fulfilled, (state, action) => {
+        state.deleteProductByAdmin.loading = false;
+        state.deleteProductByAdmin.data = action.payload;
+        state.deleteProductByAdmin.error = '';
       });
   }
 });
 
 export default reducer;
 
-export { actionGetProduct, actionAddNewProduct, actionDeleteProduct, actionUpdateProduct, actionGetDetailProduct };
+export {
+  actionGetProduct,
+  actionAddNewProduct,
+  actionDeleteProduct,
+  actionUpdateProduct,
+  actionGetDetailProduct,
+  actionGetProductById,
+  actionDeleteProductByAdmin
+};

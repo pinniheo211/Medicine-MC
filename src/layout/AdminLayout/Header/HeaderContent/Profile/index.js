@@ -42,6 +42,34 @@ function TabPanel({ children, value, index, ...other }) {
   );
 }
 
+function stringToColor(string) {
+  let hash = 0;
+  let i;
+
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = '#';
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  /* eslint-enable no-bitwise */
+
+  return color;
+}
+function stringAvatar(name) {
+  return {
+    sx: {
+      bgcolor: stringToColor(name)
+    },
+    children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`
+  };
+}
+
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
@@ -108,7 +136,7 @@ const Profile = () => {
         onClick={handleToggle}
       >
         <Stack direction="row" spacing={2} alignItems="center" sx={{ p: 0.5 }}>
-          <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
+          <Avatar alt="profile user" src="" sx={{ width: 32, height: 32 }}></Avatar>
           <div className="text-black font-bold">{dataUser?.rs?.firstname + ' ' + dataUser?.rs?.lastname}</div>
         </Stack>
       </ButtonBase>
@@ -150,7 +178,7 @@ const Profile = () => {
                       <Grid container justifyContent="space-between" alignItems="center">
                         <Grid item>
                           <Stack direction="row" spacing={1.25} alignItems="center">
-                            <Avatar alt="profile user" src={avatar1} sx={{ width: 32, height: 32 }} />
+                            <Avatar alt="profile user" src="" sx={{ width: 32, height: 32 }} />
                             <Stack>
                               <Typography variant="h6">{dataUser?.rs?.firstname + ' ' + dataUser?.rs?.lastname}</Typography>
                               <Typography variant="body2" color="textSecondary">

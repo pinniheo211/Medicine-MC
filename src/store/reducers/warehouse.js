@@ -165,6 +165,37 @@ const actionGetInventory = createAsyncThunk('warehouse/get-Inventory-warehouse',
   }
 });
 
+const actionGetWarehouseByUserId = createAsyncThunk('warehouse/get-warehouse-byUserId', async (id) => {
+  try {
+    const res = await warehouseService.getWarehouseByUserId(id);
+    if (res.status === 200) {
+      return res.data;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    const message = error.response.data?.message || error.message;
+    toast.error(message);
+    return error.response.data;
+  }
+});
+
+const actionDeleteWarehouseByAdmin = createAsyncThunk('warehouse/delete-warehouse-byAdmin', async (data) => {
+  try {
+    const res = await warehouseService.deleteWarehouseByAdmin(data);
+    if (res.status === 200) {
+      toast.success('Delete warehouse successfully');
+      return res.data;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    const message = error.response.data?.message || error.message;
+    toast.error(message);
+    return error.response.data;
+  }
+});
+
 const actionDeleteWarehouse = createAsyncThunk('warehouse/deleteWarehouse', async (id) => {
   try {
     const res = await warehouseService.deleteWarehouse(id);
@@ -243,6 +274,16 @@ const { reducer } = createSlice({
       error: ''
     },
     getInventory: {
+      loading: false,
+      data: null,
+      error: ''
+    },
+    getWarehouseByUserId: {
+      loading: false,
+      data: null,
+      error: ''
+    },
+    deleteWarehouseByAdmin: {
       loading: false,
       data: null,
       error: ''
@@ -406,6 +447,32 @@ const { reducer } = createSlice({
         state.getInventory.loading = false;
         state.getInventory.data = action.payload;
         state.getInventory.error = '';
+      })
+      .addCase(actionGetWarehouseByUserId.pending, (state) => {
+        state.getWarehouseByUserId.loading = true;
+      })
+      .addCase(actionGetWarehouseByUserId.rejected, (state, action) => {
+        state.getWarehouseByUserId.loading = false;
+        state.getWarehouseByUserId.error = action.payload;
+        state.getWarehouseByUserId.data = {};
+      })
+      .addCase(actionGetWarehouseByUserId.fulfilled, (state, action) => {
+        state.getWarehouseByUserId.loading = false;
+        state.getWarehouseByUserId.data = action.payload;
+        state.getWarehouseByUserId.error = '';
+      })
+      .addCase(actionDeleteWarehouseByAdmin.pending, (state) => {
+        state.deleteWarehouseByAdmin.loading = true;
+      })
+      .addCase(actionDeleteWarehouseByAdmin.rejected, (state, action) => {
+        state.deleteWarehouseByAdmin.loading = false;
+        state.deleteWarehouseByAdmin.error = action.payload;
+        state.deleteWarehouseByAdmin.data = {};
+      })
+      .addCase(actionDeleteWarehouseByAdmin.fulfilled, (state, action) => {
+        state.deleteWarehouseByAdmin.loading = false;
+        state.deleteWarehouseByAdmin.data = action.payload;
+        state.deleteWarehouseByAdmin.error = '';
       });
   }
 });
@@ -424,5 +491,7 @@ export {
   actionGetExport,
   actionGetDesExport,
   actionGetDesImport,
-  actionGetInventory
+  actionGetInventory,
+  actionGetWarehouseByUserId,
+  actionDeleteWarehouseByAdmin
 };

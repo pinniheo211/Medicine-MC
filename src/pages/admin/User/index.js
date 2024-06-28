@@ -11,6 +11,12 @@ import { actionBlockUser, actionGetAllUser, actionGetUserId, actionUnblockUser }
 import BlockIcon from '@mui/icons-material/Block';
 import DialogFormUpdate from './DialogFormUpdate';
 import DoneIcon from '@mui/icons-material/Done';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import AlertDialogSlide from './DialogProduct';
+import { actionGetProductById } from 'store/reducers/product';
+import DialogWarehouse from './DialogWarehouse';
+import { actionGetWarehouseByUserId } from 'store/reducers/warehouse';
+
 export const columns = [
   {
     id: 1,
@@ -54,10 +60,12 @@ const User = () => {
   const { data: dataUser } = useSelector((state) => state.auth.getAllUser);
   const [openCategory, setOpenCategory] = useState(false);
   const [openUpdateUser, setOpenUpdateUser] = useState(false);
+  const [userId, setUserId] = useState();
   const dispatch = useDispatch();
   const [page, setPage] = useState(0);
   const [id, setId] = useState();
-
+  const [open, setOpen] = useState(false);
+  const [openWarehouse, setOpenWarehouse] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
@@ -89,10 +97,19 @@ const User = () => {
       }
     });
   };
+  const handleGetProduct = (id) => {
+    setUserId(id);
+    dispatch(actionGetProductById(id));
+    setOpen(true);
+  };
+  const handleGetWarehouse = (id) => {
+    setUserId(id);
+    setOpenWarehouse(true);
+    dispatch(actionGetWarehouseByUserId(id));
+  };
   useEffect(() => {
     dispatch(actionGetAllUser());
   }, []);
-  console.log(dataUser);
   return (
     <div className="flex container flex-col gap-10 items-start">
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -111,6 +128,7 @@ const User = () => {
             <TableBody>
               {dataUser?.users?.length > 0 ? (
                 dataUser?.users?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                  console.log(row);
                   return (
                     <>
                       <TableRow hover role="checkbox" tabIndex={-1}>
@@ -122,8 +140,29 @@ const User = () => {
                         </TableCell>
                         <TableCell align="center">{row?.email}</TableCell>
                         <TableCell align="center">{row?.mobile}</TableCell>
-                        <TableCell align="center">{row?.products?.length ? row?.products?.length : 0}</TableCell>
-                        <TableCell align="center">{row?.warehouses?.length ? row?.warehouses?.length : 0}</TableCell>
+                        <TableCell align="center">
+                          <div className="flex items-center gap-3 justify-center">
+                            {row?.products?.length > 0 ? (
+                              <div className="flex items-center gap-3 justify-center" onClick={() => handleGetProduct(row?._id)}>
+                                <p>{row?.products?.length}</p>
+                                <RemoveRedEyeIcon color="primary" />
+                              </div>
+                            ) : (
+                              <p>0</p>
+                            )}
+                          </div>
+                        </TableCell>
+
+                        <TableCell align="center">
+                          {row?.warehouses?.length > 0 ? (
+                            <div className="flex items-center gap-3 justify-center" onClick={() => handleGetWarehouse(row?._id)}>
+                              <p>{row?.warehouses?.length}</p>
+                              <RemoveRedEyeIcon color="primary" />
+                            </div>
+                          ) : (
+                            <p>0</p>
+                          )}
+                        </TableCell>
                         <TableCell align="center">
                           <p className="min-w-max">{DateFormat(row?.createdAt)}</p>
                         </TableCell>
@@ -175,6 +214,8 @@ const User = () => {
             </TableBody>
           </Table>
         </TableContainer>
+        {open && <AlertDialogSlide open={open} setOpen={setOpen} userId={userId} />}
+        {openWarehouse && <DialogWarehouse open={openWarehouse} setOpen={setOpenWarehouse} userId={userId} />}
         {/* <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"

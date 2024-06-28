@@ -75,7 +75,7 @@ export default function DialogCreateBrand({ open, setOpen }) {
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          New Category
+          New Brand
         </DialogTitle>
         <IconButton
           aria-label="close"

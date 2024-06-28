@@ -48,7 +48,9 @@ export const productService = {
   detailProduct: (id) => API.get(`api/product/${id}`),
   addNewProduct: (data) => API.post(`api/product/`, data),
   deleteProduct: (id) => API.delete(`api/product/${id}`),
-  updateProduct: (data) => API.put(`api/product/${data.id}`, data.body)
+  updateProduct: (data) => API.put(`api/product/${data.id}`, data.body),
+  getProductByUserId: (id) => API.get(`api/user/products/${id}`),
+  deleteProductByAdmin: (data) => API.delete(`api/product/admin/user/${data.userId}/product/${data.id}`)
 };
 
 export const warehouseService = {
@@ -64,7 +66,9 @@ export const warehouseService = {
   getDescriptionExport: (id) => API.get(`api/export-records/${id}`),
   getDescriptionImport: (id) => API.get(`api/import-records/${id}`),
   getInventory: (data) =>
-    API.get(`api/warehouse/inventory/end-of-month?warehouseId=${data.warehouseId}&month=${data.month}&year=${data.year}`)
+    API.get(`api/warehouse/inventory/end-of-month?warehouseId=${data.warehouseId}&month=${data.month}&year=${data.year}`),
+  getWarehouseByUserId: (id) => API.get(`api/user/warehouses/${id}`),
+  deleteWarehouseByAdmin: (data) => API.delete(`api/warehouse/admin/user/${data?.userId}/warehouse/${data?.id}`)
 };
 
 export const CategoryService = {

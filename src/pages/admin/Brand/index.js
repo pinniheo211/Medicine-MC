@@ -66,7 +66,7 @@ const Brand = () => {
   return (
     <div className="flex container flex-col gap-10 items-start">
       <button onClick={() => setOpenCategory(true)} className="mr-10 px-5 py-1.5 text-white font-semibold rounded-lg bg-primary-8">
-        Create Category
+        Create Brand
       </button>
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 440 }}>
